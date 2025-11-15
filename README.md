@@ -4,8 +4,6 @@ This template provides a minimal setup to get React working in Vite with HMR and
 
 Currently, two official plugins are available:
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
 
 ## React Compiler
 
@@ -71,3 +69,50 @@ export default defineConfig([
   },
 ])
 ```
+
+## Jun Da Chinese Character Frequency Parser
+
+A helper script `scripts/parse_junda.py` was added to convert the Jun Da Chinese character frequency list into JSON. It produces an array of objects:
+
+```jsonc
+// Each object:
+{
+  "rank": 1,
+  "character": "的",
+  "frequency": 792438,
+  "pinyin": "de/di4",
+  "definition": "of; possessive particle ..."
+}
+```
+
+### Usage
+
+From the project root:
+
+```bash
+python3 scripts/parse_junda.py --input "data/junda chinese character frequency/Chinese character frequency list 汉字字频表.html" --top 200 --output junda_top200.json
+```
+
+If the local file lacks the raw rows, the script will try to fetch the remote source (`https://lingua.mtsu.edu/chinese-computing/statistics/char/list.php?Which=IM`). You can override with `--remote-url`.
+
+### Options
+
+| Flag | Description | Default |
+|------|-------------|---------|
+| `--input, -i` | Path to saved HTML/plain file | optional |
+| `--output, -o` | Output JSON file | `junda_top.json` |
+| `--top, -n` | Number of top characters | `100` |
+| `--encoding, -e` | Encoding for local file | `gbk` |
+| `--remote-url` | Alternate source URL | built-in |
+
+### Dependencies
+
+Pure stdlib by default. (Optional) Install for richer HTML parsing / remote fetch:
+
+```bash
+pip install requests beautifulsoup4
+```
+
+### Notes
+
+The remote page sometimes renders without `<tr>` tags accessible to the simple parser. If you see `No rows parsed`, open the page in a browser, copy the visible frequency table, save it as a text file with tab separation, and rerun pointing `--input` to that cleaned file. Further enhancements could include a headless browser fetch.

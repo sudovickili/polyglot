@@ -20,13 +20,12 @@ export async function generate(prompt: string): Promise<string> {
 }
 
 export async function generateObj<T>(prompt: string, schema: z.ZodSchema<T>): Promise<T> {
-  const { object } = await generateObject({
+  const result = await generateObject({
     model: openai("gpt-4o-mini"),
     prompt,
     temperature: 0, // Increase for more randomness
     maxTokens: 16384, // This is the maximum number of tokens for gpt-4o-mini
     schema,
   })
-
-  return object
+  return result.object
 }

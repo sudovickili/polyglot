@@ -1,9 +1,20 @@
 import { infoSection, serializeForLlm, serializeSchema } from '@/util/llm/promptUtil'
-import { GradeSchema } from './Grade'
+import { Grade, GradeSchema } from './Grade'
 import { Story } from './Story'
 import { APP_SUMMARY_FOR_LLM } from '@/app/appSummaryForLlm'
+import { generateObj } from '@/util/llm/generate'
 
-function gradeSummaryPrompt(story: Story, summary: string): string {
+export interface Props {
+  story: Story
+  summary: string
+}
+
+export function gradeSummary({ story, summary }: Props): Promise<Grade> {
+  const prompt = gradeSummaryPrompt({ story, summary })
+  return generateObj<Grade>(prompt, GradeSchema)
+}
+
+function gradeSummaryPrompt({ story, summary }: Props): string {
   return `
 You are an expert language learning tutor. Your task is to grade a user's understanding of a story they read in a foreign language. 
 

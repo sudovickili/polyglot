@@ -3,12 +3,34 @@ import { unlerp } from "@/util/math";
 import { WordSchema } from "@/dictionary/Word";
 import z from "zod";
 
+/** How many times a user must have seens a word without asking for a hint for it to be considered known */
+export const KNOWN_THRESHOLD = 5;
+
 export const WordStatsSchema = z.object({
+  word: WordSchema,
   nSeen: z.number().default(0),
   nHints: z.number().default(0),
-  lastHintStory: StoryIdSchema.optional()
+  nSeenSinceLastHint: z.number().default(0)
 })
 export type WordStats = z.infer<typeof WordStatsSchema>;
+
+export function updateSeen(word: WordStats) {
+  word.nSeen += 1;
+  word.nSeenSinceLastHint += 1
+}
+
+export function updateHint(word: WordStats) {
+  word.nHints += 1
+  word.nSeenSinceLastHint = 0
+}
+
+export function isKnown(word: WordStats): boolean {
+  return word.nSeenSinceLastHint >= KNOWN_THRESHOLD
+}
+
+export function isLearning(word: WordStats): boolean {
+  return word.nSeenSinceLastHint < KNOWN_THRESHOLD
+}
 
 export const ProgressSchema = z.object({
   currentStoryId: StoryIdSchema,
@@ -16,53 +38,13 @@ export const ProgressSchema = z.object({
 })
 export type Progress = z.infer<typeof ProgressSchema>;
 
-// Alternatives: Proficiency, Aptitude
-export const LEVELS = ["Beginner", "Emerging", "Intermediate", "Advanced", "Expert"] as const;
-export type Level = typeof LEVELS[number];
+export const seenWords = (progress: Progress) => Object.values(progress.wordsSeen)
 
-export const WordsToExceed: Record<Level, number> = {
-  Beginner: 100,
-  Emerging: 300,
-  Intermediate: 750,
-  Advanced: 2000,
-  Expert: 4000,
-}
-function wordsToExceed(level?: Level): number {
-  return level ? WordsToExceed[level] : 0;
-}
+/** Words that have been seen, but haven't needed a hint in a while */
+export const knownWords = (progress: Progress) => seenWords(progress).filter(isKnown)
 
-export interface LevelInfo {
-  level: Level;
-  nKnownWords: number;
-  progressToNext: number;
-}
+/** Words that needed a hint recently */
+export const learningWords = (progress: Progress) => seenWords(progress).filter(isLearning)
 
-export function knownWords(progress: Progress): number {
-  const allWords = Object.values(progress.wordsSeen);
-  const nWordsSeen = allWords.length;
-  const nWordsStruggling = allWords.filter(w => {
-    const lookedUpRecently = w.lastHintStory === progress.currentStoryId;
-    return lookedUpRecently;
-  }).length;
-  return nWordsSeen - nWordsStruggling;
-}
-
-export function computeLevel(nKnownWords: number): LevelInfo {
-  // Find the highest level for which nKnownWords >= KnownWordsByLevel[level]
-  let i = 0;
-  for (const level of LEVELS) {
-    if (nKnownWords >= WordsToExceed[level]) {
-      i += 1;
-    }
-  }
-
-  const level = LEVELS[i];
-  const lastLevel: Level | undefined = LEVELS[i - 1];
-  const progressToNext = unlerp({ start: wordsToExceed(lastLevel), end: wordsToExceed(level) }, nKnownWords)
-
-  return {
-    level,
-    nKnownWords,
-    progressToNext
-  };
-}
+/** Words that have been seen, but aren't being learned */
+export const familiarWords = (progress: Progress) => seenWords(progress).filter((w) => !isLearning(w))

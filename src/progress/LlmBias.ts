@@ -1,4 +1,6 @@
 import { Word } from "@/dictionary/Word";
+import { knownWords, learningWords, Progress, familiarWords, seenWords, isKnown, isLearning } from "./Progress";
+import { computeLevel } from "./Level";
 
 /** Can be used to multiply llm logics by a bias factor for specific words.
  * 
@@ -18,4 +20,27 @@ export function combined(a: LlmBias, b: LlmBias): LlmBias {
     }
   }
   return result;
+}
+
+/** We want to create stories that favor the highest-frequency words for beginners
+ * These high-frequency words will already be favored by the model by training,
+ * but we may want to tip the scale further.
+ */
+export function llmBiasByWordFrequency(): LlmBias {
+  return {}
+}
+
+export function llmBiasByProgress(progress: Progress): LlmBias {
+  const seen = seenWords(progress)
+
+  const llmBias: LlmBias = {}
+
+  seen.forEach(w => {
+    let factor = 2
+    if (isKnown(w)) factor *= 0.9
+    if (isLearning(w)) factor *= 2.0
+    llmBias[w.word] = factor
+  })
+
+  return llmBias
 }

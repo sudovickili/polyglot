@@ -1,4 +1,4 @@
-import { Progress, ProgressSchema, WordStats } from '@/progress/Progress'
+import { Progress, ProgressSchema, updateHint, updateSeen, WordStats } from '@/progress/Progress'
 import { stories, nextStoryId } from '@/story/stories'
 import { HintSchema } from '@/story/Story'
 import { parseStory } from '@/story/parseStory'
@@ -31,7 +31,7 @@ export const appSlice = createSlice({
 
       parseStory(story).parsedAll.forEach(word => {
         const stats = getOrCreateWordStats(state.progress.wordsSeen, word.word)
-        stats.nSeen += 1
+        updateSeen(stats)
       })
 
       state.progress.currentStoryId = nextStoryId(state.progress.currentStoryId)
@@ -40,7 +40,8 @@ export const appSlice = createSlice({
       const hint = action.payload
 
       state.hint = action.payload
-      getOrCreateWordStats(state.progress.wordsSeen, hint.word.word).nHints += 1
+      const stats = getOrCreateWordStats(state.progress.wordsSeen, hint.word.word)
+      updateHint(stats)
     },
     clearHint: (state) => {
       state.hint = undefined
@@ -51,9 +52,10 @@ export const appSlice = createSlice({
 function getOrCreateWordStats(wordsSeen: Record<Word, WordStats>, word: Word): WordStats {
   if (!wordsSeen[word]) {
     wordsSeen[word] = {
+      word,
       nSeen: 0,
       nHints: 0,
-      lastHintStory: undefined
+      nSeenSinceLastHint: 0
     }
   }
   return wordsSeen[word]

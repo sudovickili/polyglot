@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { computeLevel, LevelInfo, LEVELS, WordsToExceed } from "./Progress";
+import { computeLevel, LEVELS, WordsToExceed } from "./Level";
 
 describe("computeLevel", () => {
   it("returns Beginner for 0 known words", () => {

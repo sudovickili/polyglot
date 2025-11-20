@@ -5,12 +5,16 @@ import { parseStory } from '@/story/parseStory'
 import { Word, WordSchema } from '@/dictionary/Word'
 import { createSlice } from '@reduxjs/toolkit'
 import type { PayloadAction } from '@reduxjs/toolkit'
-import z from 'zod'
+import z, { set } from 'zod'
 import { ParsedWord } from '@/story/ParsedStory'
+import { Grade, GradeSchema } from '@/grade/Grade'
+import { AsyncState, AsyncStateSchema } from '@/util/AsyncState'
 
 export const AppStateSchema = z.object({
   progress: ProgressSchema,
-  hint: HintSchema.optional()
+  hint: HintSchema.optional(),
+  summary: z.string(),
+  grade: AsyncStateSchema(GradeSchema).optional()
 })
 
 export type AppState = z.infer<typeof AppStateSchema>
@@ -20,6 +24,7 @@ export const initialState: AppState = {
     currentStoryId: stories[0].id,
     wordsSeen: {}
   },
+  summary: '',
 }
 
 export const appSlice = createSlice({
@@ -27,6 +32,8 @@ export const appSlice = createSlice({
   initialState,
   reducers: {
     nextStory: (state) => {
+      delete state.grade
+      state.summary = ''
       const story = stories.find((story) => story.id === state.progress.currentStoryId)!;
 
       parseStory(story).parsedAll.forEach(word => {
@@ -45,6 +52,15 @@ export const appSlice = createSlice({
     },
     clearHint: (state) => {
       state.hint = undefined
+    },
+    setGrade: (state, action: PayloadAction<AsyncState<Grade>>) => {
+      state.grade = action.payload
+    },
+    retryStory: (state) => {
+      delete state.grade
+    },
+    setSummary: (state, action: PayloadAction<string>) => {
+      state.summary = action.payload
     }
   },
 })
@@ -65,7 +81,10 @@ function getOrCreateWordStats(wordsSeen: Record<Word, WordStats>, word: Word): W
 export const {
   nextStory,
   hint,
-  clearHint
+  clearHint,
+  setGrade,
+  retryStory,
+  setSummary
 } = appSlice.actions
 
 export default appSlice.reducer

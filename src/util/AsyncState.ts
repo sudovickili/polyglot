@@ -1,9 +1,26 @@
-interface Idle { status: 'idle' }
-interface Loading { status: 'loading' }
-interface Success<T> { status: 'success'; data: T }
-interface Error { status: 'error'; error: string }
 
-export type AsyncState<T> = Idle | Loading | Success<T> | Error;
+import { z } from 'zod';
+
+export const IdleSchema = z.object({ status: z.literal('idle') });
+export const LoadingSchema = z.object({ status: z.literal('loading') });
+export const SuccessSchema = <T extends z.ZodTypeAny>(dataSchema: T) =>
+  z.object({ status: z.literal('success'), data: dataSchema });
+export const ErrorSchema = z.object({ status: z.literal('error'), error: z.string() });
+
+export function AsyncStateSchema<T extends z.ZodTypeAny>(dataSchema: T) {
+  return z.union([
+    IdleSchema,
+    LoadingSchema,
+    SuccessSchema(dataSchema),
+    ErrorSchema,
+  ]);
+}
+
+export type AsyncState<T> =
+  | z.infer<typeof IdleSchema>
+  | z.infer<typeof LoadingSchema>
+  | { status: 'success'; data: T }
+  | z.infer<typeof ErrorSchema>;
 
 export namespace Async {
   export function idle<T>(): AsyncState<T> {

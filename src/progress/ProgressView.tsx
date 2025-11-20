@@ -1,10 +1,7 @@
 import { cn } from "@/lib/utils"
-import { knownWords, Progress } from "./Progress"
-import { Button } from "@/components/ui/button"
-import { useAppState, useDispatch } from "@/state/hooks"
-import { nextStory } from "@/state/appSlice"
-import { Textarea } from "@/components/ui/textarea"
+import { knownWords, learningWords, Progress } from "./Progress"
 import { computeLevel } from "./Level"
+import { SummaryView } from "@/grade/SummaryView"
 
 interface Props {
   className?: string
@@ -12,29 +9,33 @@ interface Props {
 }
 
 export function ProgressView({ className, progress }: Props) {
-  const dispatch = useDispatch()
   const nKnownWords = knownWords(progress).length
   const level = computeLevel(nKnownWords)
 
-  const words = Object.entries(progress.wordsSeen)
-  const lookedUp = words.filter(([, stats]) => stats.nHints > 0)
-  const seen = words.filter(([, stats]) => stats.nSeen > 0)
-
   return (
     <div className={cn("flex flex-col", className)}>
-      <p className="text-3xl mb-5">{level.level}</p>
+      <p className="text-3xl">{level.level}</p>
+      <div className="h-5" />
       <ProgressBar percent={level.progressToNext * 100} height="1rem" />
       <p className="opacity-50">{nKnownWords} known words</p>
+      <div className="h-2" />
       <div>
-        <p>Looked Up: {lookedUp.map(([w]) => w).join(", ")}</p>
-        <p>Seen: {seen.map(([w]) => w).join(", ")}</p>
+        <p>Learning</p>
+        <p className="text-sm opacity-50">
+          {learningWords(progress)
+            .map((w) => w.word)
+            .join(", ")}
+        </p>
+        {/* <p>
+          Known:{" "}
+          {knownWords(progress)
+            .map((w) => w.word)
+            .join(", ")}
+        </p> */}
       </div>
 
       <div className="flex-1" />
-      <Textarea placeholder="Summarize The Story" />
-      <Button size="lg" onClick={() => dispatch(nextStory())}>
-        Grade
-      </Button>
+      <SummaryView />
     </div>
   )
 }

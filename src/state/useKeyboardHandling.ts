@@ -7,7 +7,6 @@ export function useKeyboardHandling() {
 
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
-      console.log("Key down:", event.key);
       if (event.key === "Escape") {
         dispatch(clearHint())
       }

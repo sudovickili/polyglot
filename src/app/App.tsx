@@ -6,6 +6,7 @@ import { TitleView } from "./TitleView"
 import { clearHint } from "@/state/appSlice"
 import { wrapClick } from "@/util/wrapClick"
 import { useKeyboardHandling } from "@/state/useKeyboardHandling"
+import { GradeView } from "@/grade/GradeView"
 
 function App() {
   const progress = useAppState((state) => state.progress)
@@ -14,7 +15,10 @@ function App() {
 
   return (
     <div
-      className={cn("w-screen h-screen bg-neutral-950", "flex items-stretch")}
+      className={cn(
+        "w-screen h-screen bg-neutral-950 relative",
+        "flex items-stretch"
+      )}
       onClick={wrapClick((e) => {
         dispatch(clearHint())
       })}
@@ -27,6 +31,7 @@ function App() {
         className="flex-1 min-w-0 p-4 bg-neutral-900"
         progress={progress}
       />
+      <GradeView />
     </div>
   )
 }

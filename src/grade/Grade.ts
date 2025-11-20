@@ -17,3 +17,6 @@ The reasoning behind the given grade, without giving away details that would spo
 
 export type Grade = z.infer<typeof GradeSchema>
 
+export function isPassingGrade(grade: Grade): boolean {
+  return ["A", "B", "C"].includes(grade.letter)
+}

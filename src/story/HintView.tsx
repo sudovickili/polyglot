@@ -25,23 +25,23 @@ export function HintView({ word }: { word: ParsedWord }) {
   return (
     <div
       className={cn(
-        "rounded shadow-lg bg-blue-400 text-black p-2 max-w-90 text-sm relative"
+        "rounded shadow-lg bg-blue-400 text-black p-2 max-w-90 relative"
       )}
     >
       {entry.status === "success" && entry.data && (
-        <p>{entry.data.pinyin.map(prettyPinyin).join(", ")} </p>
+        <p>{entry.data.pinyin.map(prettyPinyin).join(" ")} </p>
       )}
       {hintLevel > 1 && (
         <>
           {entry.status === "success" && entry.data && (
-            <p>{entry.data.definitions.join(", ")} </p>
+            <p className="text-sm">{entry.data.definitions.join(", ")} </p>
           )}
         </>
       )}
       {hintLevel > 2 && (
         <>
           <div className="bg-black/20 w-full h-px my-2" />
-          <div className="">
+          <div className="text-sm">
             {chars.map((char) => (
               <CharView key={char} char={char} />
             ))}

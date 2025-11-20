@@ -5,8 +5,7 @@ import { dict } from "@/dictionary/Dictionary"
 import { useAppState } from "@/state/hooks"
 import { cn } from "@/lib/utils"
 import { prettyPinyin } from "@/dictionary/chinese/prettyPinyin"
-import { Button } from "@/components/ui/button"
-import { clearHint, hint } from "@/state/appSlice"
+import { Char, Word } from "@/dictionary/Word"
 
 export function HintView({ word }: { word: ParsedWord }) {
   const entry = useAsync(() => dict.definitionLookup(word.word), [word])
@@ -40,21 +39,27 @@ export function HintView({ word }: { word: ParsedWord }) {
         </>
       )}
       {hintLevel > 2 && (
-        <div className="">
-          {chars.map((char) => (
-            <p key={char}> {`${char} ${char}`} </p>
-          ))}
-        </div>
+        <>
+          <div className="bg-black/20 w-full h-px my-2" />
+          <div className="">
+            {chars.map((char) => (
+              <CharView key={char} char={char} />
+            ))}
+          </div>
+        </>
       )}
     </div>
   )
 }
 
-function XButton() {
-  const dispatch = useDispatch()
+function CharView({ char }: { char: string }) {
+  const entry = useAsync(() => dict.definitionLookup(char as Word), [char])
   return (
-    <button className="w-5 h-5" onClick={() => dispatch(clearHint())}>
-      X
-    </button>
+    <p className="opacity-50">
+      <span>{char}</span>
+      {entry.status === "success" && (
+        <span>{entry.data?.definitions.join(", ")} </span>
+      )}
+    </p>
   )
 }

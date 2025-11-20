@@ -14,7 +14,6 @@ function parseContent(content: string): Word[][] {
   return rawLines.map(line => parseLine(line));
 }
 
-
 export function parseStory(story: Story): ParsedStory {
   let iWord = 0;
 

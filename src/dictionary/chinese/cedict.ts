@@ -2,6 +2,7 @@ import { get, getAll, openDb } from '@/util/indexedDbUtil';
 import cedictData from './data/cedict_ts.u8?raw'
 import { Log } from '@/util/Log';
 import { Word } from '../Word';
+import { AsyncCache } from '@/util/AsyncCache';
 
 export interface CedictEntry {
   traditional: string;
@@ -53,15 +54,20 @@ function createCedictDb(loadMap: () => Map<string, CedictEntry>, name = "cedict-
 }
 
 export class CedictDb {
-  private constructor(private db: IDBDatabase) { }
+  private cache: AsyncCache<CedictEntry, Word>;
+  private constructor(private db: IDBDatabase) {
+    this.cache = new AsyncCache<CedictEntry, Word>(async (word: Word) => {
+      return get(this.db, "entries", word);
+    });
+  }
 
   static async create(): Promise<CedictDb> {
     const db = await createCedictDb(() => parseCedict(cedictData))
     return new CedictDb(db)
   }
 
-  get(word: Word): Promise<CedictEntry | undefined> {
-    return get(this.db, "entries", word);
+  async get(word: Word): Promise<CedictEntry | undefined> {
+    return this.cache.get(word);
   }
 
   getAll(words: Word[]): Promise<(CedictEntry | undefined)[]> {

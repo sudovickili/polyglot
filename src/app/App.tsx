@@ -5,18 +5,18 @@ import cn from "classnames"
 import { TitleView } from "./TitleView"
 import { clearHint } from "@/state/appSlice"
 import { wrapClick } from "@/util/wrapClick"
+import { useKeyboardHandling } from "@/state/useKeyboardHandling"
 
 function App() {
   const progress = useAppState((state) => state.progress)
   const dispatch = useDispatch()
+  useKeyboardHandling()
 
   return (
     <div
       className={cn("w-screen h-screen bg-neutral-950", "flex items-stretch")}
       onClick={wrapClick((e) => {
-        if (!e.defaultPrevented) {
-          dispatch(clearHint())
-        }
+        dispatch(clearHint())
       })}
     >
       <div className="flex-2 min-w-0">

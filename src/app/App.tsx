@@ -16,19 +16,19 @@ function App() {
   return (
     <div
       className={cn(
-        "w-screen h-screen bg-neutral-950 relative",
+        "w-screen h-screen bg-neutral-900 relative",
         "flex items-stretch"
       )}
       onClick={wrapClick((e) => {
         dispatch(clearHint())
       })}
     >
-      <div className="flex-2 min-w-0 w-full flex flex-col">
+      <div className="flex-2 min-w-0 w-full flex flex-col border-r">
         <TitleView className="p-4" />
         <StoryView className="p-4 flex-1 min-h-0 overflow-scroll" />
       </div>
       <ProgressView
-        className="flex-1 min-w-0 p-4 bg-neutral-900"
+        className="flex-1 min-w-0 p-4 bg-neutral-800"
         progress={progress}
       />
       <GradeView />

@@ -1,11 +1,11 @@
 import { useAsync } from "@/util/hooks/useAsync"
-import { ParsedWord } from "./ParsedStory"
 import { useDispatch } from "react-redux"
 import { dict } from "@/dictionary/Dictionary"
 import { useAppState } from "@/state/hooks"
 import { cn } from "@/lib/utils"
 import { prettyPinyin } from "@/dictionary/chinese/prettyPinyin"
 import { Char, Word } from "@/dictionary/Word"
+import { ParsedWord } from "./Story"
 
 export function HintView({ word }: { word: ParsedWord }) {
   const entry = useAsync(() => dict.define(word.word), [word])

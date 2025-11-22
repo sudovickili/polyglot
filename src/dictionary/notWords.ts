@@ -1,0 +1,1 @@
+export const NOT_WORDS = new Set(Array.from('。,，'))

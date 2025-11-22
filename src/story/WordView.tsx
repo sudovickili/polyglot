@@ -2,9 +2,16 @@ import { Popover } from "radix-ui"
 import { useRef } from "react"
 import { useAppState, useDispatch } from "@/state/hooks"
 import { hint } from "@/state/appSlice"
-import { ParsedWord } from "./ParsedStory"
 import { HintView } from "./HintView"
 import { wrapClick } from "@/util/wrapClick"
+import { ParsedWord } from "./Story"
+import { cn } from "@/lib/utils"
+
+const className = "group p-1 rounded relative"
+
+export function SimpleWordView({ word }: { word: string }) {
+  return <span className={className}>{word}</span>
+}
 
 export function WordView({ word }: { word: ParsedWord }) {
   const currentHint = useAppState((state) => state.hint)
@@ -30,7 +37,7 @@ export function WordView({ word }: { word: ParsedWord }) {
               })
             )
           })}
-          className="group bg-neutral-900 text-white p-1 m-1 rounded relative"
+          className={cn(className)}
         >
           {word.word}
         </span>

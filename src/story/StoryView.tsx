@@ -1,5 +1,6 @@
+import { NOT_WORDS } from "@/dictionary/notWords"
 import { ParsedWord } from "./Story"
-import { WordView } from "./WordView"
+import { SimpleWordView, WordView } from "./WordView"
 import { parseStory } from "./parseStory"
 import { cn } from "@/lib/utils"
 import { useAppState } from "@/state/hooks"
@@ -25,8 +26,10 @@ export function StoryView({ className }: Props) {
   const { parsedTitle, parsedContent } = story.val
 
   return (
-    <div className={cn(className, "select-none flex flex-col gap-1")}>
-      <StoryLine line={parsedTitle} className={"mb-8 text-3xl"} />
+    <div
+      className={cn(className, "select-none flex flex-col gap-0 text-white/80")}
+    >
+      <StoryLine line={parsedTitle} className={"mb-4 text-3xl"} />
       {parsedContent.map((line, index) => (
         <StoryLine key={index} line={line} />
       ))}
@@ -42,10 +45,14 @@ function StoryLine({
   className?: string
 }) {
   return (
-    <div className={cn("text-xl flex flex-wrap mb-4", className)}>
-      {line.map((word) => (
-        <WordView key={word.parsedId} word={word} />
-      ))}
+    <div className={cn("text-xl flex flex-wrap", className)}>
+      {line.map((word) => {
+        return NOT_WORDS.has(word.word) ? (
+          <SimpleWordView word={word.word} />
+        ) : (
+          <WordView key={word.parsedId} word={word} />
+        )
+      })}
     </div>
   )
 }

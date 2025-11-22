@@ -1,19 +1,21 @@
 import { setGrade } from "@/state/appSlice"
-import { Story } from "@/story/Story"
-import { AsyncState } from "@/util/AsyncState"
+import { Async } from "@/util/AsyncState"
 import { gradeSummary } from "./gradeSummary"
-import { AppDispatch } from "@/state/store"
+import { AppThunk } from "@/state/store"
 
-export async function gradeSummaryThunk(dispatch: AppDispatch, story: AsyncState<Story>, summary: string) {
+export const gradeSummaryThunk = (): AppThunk => async (dispatch, getState) => {
+  const currentStory = getState().app.currentStory
+  const story = getState().app.storiesById[currentStory.storyId]
   if (story.status !== "success") return
-  dispatch(setGrade({ status: "loading" }))
+  dispatch(setGrade(Async.loading()))
   const grade = await gradeSummary({
-    story: story.val,
-    summary,
+    story: story.val.story,
+    summary: currentStory.summary,
   })
-  if (grade.ok) {
-    dispatch(setGrade({ status: "success", val: grade.val }))
-  } else {
-    dispatch(setGrade({ status: "error", err: grade.err }))
-  }
+  dispatch(setGrade(Async.fromResult(grade)))
+
+  // dispatch(setGrade(Async.success({
+  //   letter: 'A',
+  //   reason: "Cause you're the man"
+  // })))
 }

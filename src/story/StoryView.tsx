@@ -48,7 +48,7 @@ function StoryLine({
     <div className={cn("text-xl flex flex-wrap", className)}>
       {line.map((word) => {
         return NOT_WORDS.has(word.word) ? (
-          <SimpleWordView word={word.word} />
+          <SimpleWordView key={word.parsedId} word={word.word} />
         ) : (
           <WordView key={word.parsedId} word={word} />
         )

@@ -1,6 +1,6 @@
 import z from "zod";
 
-export const StoryIdSchema = z.uuid().brand("StoryId");
+export const StoryIdSchema = z.string().brand("StoryId");
 export type StoryId = z.infer<typeof StoryIdSchema>;
 export function generateStoryId(): StoryId {
   return crypto.randomUUID() as StoryId;

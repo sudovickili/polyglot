@@ -1,16 +1,12 @@
 import { Button } from "@/components/ui/button"
 import { Textarea } from "@/components/ui/textarea"
 import { setSummary } from "@/state/appSlice"
-import { useAppState } from "@/state/hooks"
-import { useDispatch } from "react-redux"
+import { useAppDispatch, useAppState } from "@/state/hooks"
 import { gradeSummaryThunk } from "./gradeSummaryThunk"
-import { createStoryThunk } from "@/story/createStoryThunk"
 
 export function SummaryView() {
-  const dispatch = useDispatch()
-  const { storyId, summary } = useAppState((s) => s.currentStory)
-  const story = useAppState((s) => s.storiesById[storyId])
-  const progress = useAppState((s) => s.progress)
+  const dispatch = useAppDispatch()
+  const { summary } = useAppState((s) => s.currentStory)
 
   return (
     <div>
@@ -23,8 +19,7 @@ export function SummaryView() {
       <Button
         size="lg"
         onClick={() => {
-          createStoryThunk(dispatch, progress)
-          // gradeSummaryThunk(dispatch, story, summary)
+          dispatch(gradeSummaryThunk())
         }}
       >
         Grade

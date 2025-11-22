@@ -50,8 +50,6 @@ export async function parseStory(story: Story): Promise<ParsedStory> {
     })
   ));
 
-  console.log(parsedContent)
-
   return {
     story,
     parsedTitle,

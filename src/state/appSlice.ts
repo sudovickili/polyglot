@@ -1,5 +1,5 @@
 import { getOrCreateWordStats, ProgressSchema, updateHint, updateProgressForCompletedStory } from '@/progress/Progress'
-import { STORY_0 } from '@/story/stories'
+import { STORY_0 } from '@/story/curatedStories'
 import { HintSchema, ParsedWord, Story, StoryId, StoryIdSchema, StorySchema } from '@/story/Story'
 import { parseStory } from '@/story/parseStory'
 import { createSlice } from '@reduxjs/toolkit'
@@ -19,6 +19,8 @@ export const AppStateSchema = z.object({
 
 export type AppState = z.infer<typeof AppStateSchema>
 
+const initialStory = await parseStory(STORY_0)
+
 export const initialState: AppState = {
   progress: {
     wordsSeen: {}
@@ -28,7 +30,7 @@ export const initialState: AppState = {
     summary: '',
   },
   storiesById: {
-    [STORY_0.id]: Async.idle()
+    [STORY_0.id]: Async.success(initialStory)
   }
 }
 

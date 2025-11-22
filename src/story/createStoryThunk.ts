@@ -1,33 +1,32 @@
-import { Result, rmap } from "@/util/Result";
-import { generateStoryId, StoryResponse } from "./Story";
+import { Ok } from "@/util/Result";
+import { generateStoryId } from "./Story";
 import { createStory } from "./createStory";
-import { Progress } from "@/progress/Progress";
-import { AppDispatch } from "@/state/store";
 import { nextStory, setStory } from "@/state/appSlice";
 import { Async } from "@/util/AsyncState";
-import { stories } from "./stories";
+import { nextStoryId, curatedStories } from "./curatedStories";
 import { parseStory } from "./parseStory";
+import { AppThunk } from "@/state/store";
 
-export async function createStoryThunk(dispatch: AppDispatch, progress: Progress) {
-  const id = stories[1].id
-  const story = stories[1]
-  const parsed = await parseStory(story)
-  const asyncStory = Async.success(parsed)
+export const createStoryThunk = (): AppThunk => async (dispatch, getState) => {
+  const nextCuratedStoryId = nextStoryId(
+    getState().app.currentStory.storyId
+  );
+
+  const id = nextCuratedStoryId ?? generateStoryId();
+
   dispatch(nextStory({ id }))
 
-  // const id = generateStoryId()
-  // dispatch(nextStory({ id }))
-  // const result = await createStory({ progress })
+  const progress = getState().app.progress;
 
-  // const asyncStory = Async.fromResult(rmap(result, story => ({
-  //   ...story,
-  //   id
-  // })))
+  const curated = curatedStories.find((s) => s.id === nextCuratedStoryId)
+  const result = curated ? Ok(curated) : (await createStory({ progress }));
 
-  dispatch(
-    setStory({
-      id,
-      story: asyncStory,
+  if (result.ok) {
+    const story = await parseStory({
+      ...result.val, id
     })
-  )
+    dispatch(setStory({ id, story: Async.success(story) }));
+  } else {
+    dispatch(setStory({ id, story: Async.error(result.err) }));
+  }
 }

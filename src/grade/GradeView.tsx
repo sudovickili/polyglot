@@ -1,13 +1,10 @@
 import { cn } from "@/lib/utils"
 import { Spinner } from "@/components/ui/spinner"
-import { useAppState, useDispatch } from "@/state/hooks"
+import { useAppDispatch, useAppState } from "@/state/hooks"
 import { Grade, GradeLetter, isPassingGrade } from "./Grade"
 import { Button } from "@/components/ui/button"
 import { CircleArrowRight, RotateCcw } from "lucide-react"
-import { nextStory, retryStory, setGrade, setStory } from "@/state/appSlice"
-import { generateStoryId } from "@/story/Story"
-import { createStory } from "@/story/createStory"
-import { Async } from "@/util/AsyncState"
+import { retryStory } from "@/state/appSlice"
 import { createStoryThunk } from "@/story/createStoryThunk"
 import { Log } from "@/util/Log"
 
@@ -60,7 +57,7 @@ function GradeSuccessView({ grade }: { grade: Grade }) {
 
       <p>{grade.reason}</p>
 
-      <ContinueButton grade={grade} />
+      {isPass ? <ContinueButton /> : <RetryButton />}
     </div>
   )
 }
@@ -76,32 +73,30 @@ function gradeToColor(grade: Grade): string {
   return colorByGrade[grade.letter]
 }
 
-function ContinueButton({ grade }: { grade: Grade }) {
-  const dispatch = useDispatch()
-  const progress = useAppState((s) => s.progress)
+function RetryButton() {
+  const dispatch = useAppDispatch()
+  return (
+    <Button
+      className="flex items-center gap-2"
+      onClick={() => {
+        dispatch(retryStory())
+      }}
+    >
+      <RotateCcw />
+      Re-read Story
+    </Button>
+  )
+}
 
-  const isPass = isPassingGrade(grade)
-
-  if (!isPass) {
-    return (
-      <Button
-        className="flex items-center gap-2"
-        onClick={() => {
-          dispatch(retryStory())
-        }}
-      >
-        <RotateCcw />
-        Re-read Story
-      </Button>
-    )
-  }
+function ContinueButton() {
+  const dispatch = useAppDispatch()
 
   return (
     <Button
       className="flex items-center gap-2"
       onClick={() => {
         Log.temp("Continuing to next story")
-        createStoryThunk(dispatch, progress)
+        dispatch(createStoryThunk())
       }}
     >
       <CircleArrowRight />

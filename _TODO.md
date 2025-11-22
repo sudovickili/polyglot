@@ -1,6 +1,4 @@
 # Todos
-- Add track of starter stories
-- Correctly calculate logit bias
 - Progress Deep Dive View
   - Learning, Known, and Familiar. Bucketed by commonality (extreemely common, very common, common, uncommon, rare, very rare, extreemely rare)
   - Describe how known/learning is calculated

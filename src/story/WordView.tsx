@@ -1,6 +1,6 @@
 import { Popover } from "radix-ui"
 import { useRef } from "react"
-import { useAppState, useDispatch } from "@/state/hooks"
+import { useAppState, useAppDispatch } from "@/state/hooks"
 import { hint } from "@/state/appSlice"
 import { HintView } from "./HintView"
 import { wrapClick } from "@/util/wrapClick"
@@ -17,7 +17,7 @@ export function WordView({ word }: { word: ParsedWord }) {
   const currentHint = useAppState((state) => state.hint)
   const isActive = currentHint?.word.parsedId === word.parsedId
   const hintLevel = isActive ? currentHint.level : 0
-  const dispatch = useDispatch()
+  const dispatch = useAppDispatch()
   const anchorRef = useRef<HTMLSpanElement | null>(null)
 
   return (

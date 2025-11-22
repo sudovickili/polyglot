@@ -12,8 +12,6 @@ export function ProgressView({ className, progress }: Props) {
   const nKnownWords = knownWords(progress).length
   const level = computeLevel(nKnownWords)
 
-  console.log(`learning: ${JSON.stringify(learningWords(progress), null, 2)}`)
-
   return (
     <div className={cn("flex flex-col", className)}>
       <p className="text-3xl">{level.level}</p>
@@ -22,7 +20,12 @@ export function ProgressView({ className, progress }: Props) {
       <p className="opacity-50">{nKnownWords} known words</p>
       <div className="h-2" />
       <div>
-        <p>Learning</p>
+        <p>
+          Learning{" "}
+          <span className="text-sm opacity-50">
+            ({learningWords(progress).length})
+          </span>
+        </p>
         <p className="text-sm opacity-50">
           {learningWords(progress)
             .map((w) => w.word)

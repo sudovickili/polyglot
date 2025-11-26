@@ -51,7 +51,7 @@ export function llmBiasByProgress(progress: Progress): LlmBias {
   return llmBias
 }
 
-export function printForLlm(bias: LlmBias): string {
+export function printBiasForLlm(bias: LlmBias): string {
   return Object.entries(bias)
     .sort(([, a], [, b]) => b - a)
     .map(([word, factor]) => `${word}: ${factor.toFixed(1)}`)

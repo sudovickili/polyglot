@@ -1,4 +1,4 @@
-import { generateText, generateObject } from "ai"
+import { generateText, generateObject, streamObject } from "ai"
 import { createOpenAI } from "@ai-sdk/openai"
 import z from "zod"
 import { Err, Ok, Result } from "../Result"
@@ -35,5 +35,24 @@ export async function generateObj<T>(prompt: string, schema: z.ZodSchema<T>): Pr
     return Ok(result.object)
   } catch (e) {
     return Err(String(e))
+  }
+}
+
+export async function streamObj<T>(prompt: string, schema: z.ZodSchema<T>, onData: (data: Result<T>) => void) {
+  const { partialObjectStream } = streamObject({
+    model: openai("gpt-5-nano"),
+    prompt,
+    temperature: 0, // Increase for more randomness
+    maxTokens: 5000,
+    schema,
+  })
+
+  try {
+    for await (const partialObj of partialObjectStream) {
+      onData(Ok(partialObj as T))
+    }
+    // TODO: Signify completion somehow
+  } catch (e) {
+    onData(Err(String(e)))
   }
 }

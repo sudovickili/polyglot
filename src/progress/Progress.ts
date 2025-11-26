@@ -1,3 +1,4 @@
+import { isNotWord, NOT_WORDS } from "@/dictionary/notWords";
 import { Word, WordSchema } from "@/dictionary/Word";
 import z from "zod";
 
@@ -40,7 +41,7 @@ function updateSeen(word: WordStats, count: number) {
 }
 
 export function updateProgressForCompletedStory(progress: Progress, words: Word[]) {
-  const wordCounts = words.reduce<Map<Word, number>>((acc, w) => {
+  const wordCounts = words.filter(word => !isNotWord(word)).reduce<Map<Word, number>>((acc, w) => {
     acc.set(w, (acc.get(w) || 0) + 1)
     return acc
   }, new Map<Word, number>())
@@ -50,7 +51,6 @@ export function updateProgressForCompletedStory(progress: Progress, words: Word[
     updateSeen(stats, count)
   })
 }
-
 
 export function isKnown(word: WordStats): boolean {
   if (word.nSeenSinceLastHint === undefined) {

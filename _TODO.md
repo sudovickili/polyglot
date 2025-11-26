@@ -1,5 +1,4 @@
 # Todos
-- Custom bias printing to maximize llm clarity
 - Object Streaming
 - Iterate on LLM grading
 - Iterate on LLM story generation
@@ -7,22 +6,22 @@
 - Progress Deep Dive View
   - Learning, Known, and Familiar. Bucketed by commonality (extreemely common, very common, common, uncommon, rare, very rare, extreemely rare)
   - Describe how known/learning is calculated
-- Add all Junda Chars
-- Integrate character rarity (by color?)
-- Look into ways to improve dictionary
-  - More words
-  - Frequency for words (not just chars)
-  - Prefer frequency and definitions from [wiktionary](https://en.wiktionary.org/wiki/Appendix:Mandarin_Frequency_lists)
 - Pronunciation from wiktionary: https://en.wiktionary.org/wiki/File:Zh-yi1.ogg
+- Improve Dictionary
+  - Prefer frequency and definitions from [wiktionary](https://en.wiktionary.org/wiki/Appendix:Mandarin_Frequency_lists)
+  - Add all Junda Chars
+- Properly handle partial streamed object validation
+  - Async.Loading partial field
+  - Handle final result (await result.object)
 
 ## Future
 - Phone Layout
 - History View
 - Service Worker
-- Prune definitions from dictionary with uncommon characters?
-- Local LLM with custom logit bias and API
 - Flash card mode for learning words
 - Try using Deep Seek's API (probably much higher % chinese training data)
+- Integrate character rarity (by color?)
 
 ## Maybe
 - Swap Out IndexedDB for regular js objects?
+- Local LLM with custom logit bias and API

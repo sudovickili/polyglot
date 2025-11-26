@@ -1,25 +1,12 @@
 import { infoSection, serializeForLlm } from '@/util/llm/promptUtil'
-import { Grade, GradeSchema } from './Grade'
 import { Story } from '@/story/Story'
-import { APP_SUMMARY_FOR_LLM } from '@/app/appSummaryForLlm'
-import { generateObj } from '@/util/llm/generate'
-import { Log } from '@/util/Log'
-import { Result } from '@/util/Result'
 
 export interface Props {
   story: Story
   summary: string
 }
 
-export async function gradeSummary({ story, summary }: Props): Promise<Result<Grade>> {
-  const prompt = gradeSummaryPrompt({ story, summary })
-  Log.temp(`Grade Summary Prompt: ${prompt}`)
-  const response = await generateObj<Grade>(prompt, GradeSchema)
-  Log.temp(`Grade Summary Response: ${JSON.stringify(response, null, 2)}`)
-  return response
-}
-
-function gradeSummaryPrompt({ story, summary }: Props): string {
+export function gradeSummaryPrompt({ story, summary }: Props): string {
   return `
 You are an expert language learning tutor. Your task is to grade a user's understanding of a story they read in a foreign language. 
 
@@ -28,15 +15,10 @@ Your Tone:
 
 Important Requirements:
 - Respond in english, but you may reference foreign language words as needed.
+- The grade reason MUST be direct and concise. No more than 1-2 sentences.
+- NEVER share details about the story that aren't in the user's summary. The user may read the story again for a better grade.
 - If the user's summary is empty, or clearly irrelevant to the story, they should not get a passing grade.
 - The user's summary must be in English to get a passing grade.
-
-Note:
-- When the user receives their grade and the reasoning, the UI will present a button to re-read the story or continue to the next as appropriate. Do not re-state these instructions in your reasoning.
-
-You operate within the Polyglot app.
-
-${infoSection('App README', APP_SUMMARY_FOR_LLM)}
 
 ${infoSection('The Story That The User is Asked To Read And Understand', serializeForLlm(story))}
 

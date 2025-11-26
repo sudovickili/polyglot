@@ -1,9 +1,8 @@
 import { infoSection, serializeForLlm } from '@/util/llm/promptUtil'
 import { StoryResponse, StoryResponseSchema } from './Story'
-import { APP_SUMMARY_FOR_LLM } from '@/app/appSummaryForLlm'
 import { generateObj } from '@/util/llm/generate'
 import { knownWords, Progress } from '@/progress/Progress'
-import { llmBiasByProgress } from '@/progress/LlmBias'
+import { llmBiasByProgress, printBiasForLlm } from '@/progress/LlmBias'
 import { Result } from '@/util/Result'
 import { Log } from '@/util/Log'
 import { computeLevel, Level } from '@/progress/Level'
@@ -37,11 +36,7 @@ Important Requirements:
 - The story MUST be engaging and appropriate for the user's proficiency level.
 - The story MUST incorporate the favored words provided, giving preference to higher-weighted words.
 
-You operate within the Polyglot app.
-
-${infoSection('App README', APP_SUMMARY_FOR_LLM)}
-
-${infoSection('Favored Words With Weight. Prefer to include these words in the story', serializeForLlm(llmBias))}
+${infoSection('Favored Words With Weight. Prefer to include these words in the story based on the factor', printBiasForLlm(llmBias))}
 
 ${infoSection('User Language Proficiency Level. Create the story to match this level.', `${level.level}\n\n${LEVEL_EXPLANATIONS[level.level]}`)}
 `

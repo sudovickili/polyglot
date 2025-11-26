@@ -7,14 +7,16 @@ import type { PayloadAction } from '@reduxjs/toolkit'
 import z from 'zod'
 import { ParsedStory, ParsedStorySchema } from '@/story/ParsedStory'
 import { Grade } from '@/grade/Grade'
-import { Async, AsyncState, AsyncStateSchema } from '@/util/AsyncState'
 import { StoryEvalSchema } from '@/story/StoryEval'
+import { LanguageSettingsSchema } from '@/app/LanguageSettings'
+import { Streamed, StreamedState, StreamedStateSchema } from '@/util/StreamedState'
 
 export const AppStateSchema = z.object({
   progress: ProgressSchema,
   hint: HintSchema.optional(),
   currentStory: StoryEvalSchema,
-  storiesById: z.record(StoryIdSchema, AsyncStateSchema(ParsedStorySchema))
+  storiesById: z.record(StoryIdSchema, StreamedStateSchema(ParsedStorySchema, ParsedStorySchema)),
+  language: LanguageSettingsSchema
 })
 
 export type AppState = z.infer<typeof AppStateSchema>
@@ -30,7 +32,11 @@ export const initialState: AppState = {
     summary: '',
   },
   storiesById: {
-    [STORY_0.id]: Async.success(initialStory)
+    [STORY_0.id]: Streamed.success(initialStory)
+  },
+  language: {
+    learning: 'zh-simplified',
+    native: 'en'
   }
 }
 
@@ -47,13 +53,13 @@ export const appSlice = createSlice({
 
       delete state.hint
       const { id } = action.payload
-      state.storiesById[id] = Async.idle()
+      state.storiesById[id] = Streamed.idle()
       state.currentStory = {
         storyId: id,
         summary: ''
       }
     },
-    setStory: (state, action: PayloadAction<{ id: StoryId, story: AsyncState<ParsedStory> }>) => {
+    setStory: (state, action: PayloadAction<{ id: StoryId, story: StreamedState<ParsedStory> }>) => {
       const { id, story } = action.payload
       state.storiesById[id] = story
     },
@@ -67,7 +73,7 @@ export const appSlice = createSlice({
     clearHint: (state) => {
       delete state.hint
     },
-    setGrade: (state, action: PayloadAction<AsyncState<Grade>>) => {
+    setGrade: (state, action: PayloadAction<StreamedState<Grade>>) => {
       state.currentStory.grade = action.payload
     },
     retryStory: (state) => {

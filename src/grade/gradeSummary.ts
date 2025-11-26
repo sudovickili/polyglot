@@ -15,7 +15,6 @@ Your Tone:
 
 Important Requirements:
 - Respond in english, but you may reference foreign language words as needed.
-- The grade reason MUST be direct and concise. No more than 1-2 sentences.
 - NEVER share details about the story that aren't in the user's summary. The user may read the story again for a better grade.
 - If the user's summary is empty, or clearly irrelevant to the story, they should not get a passing grade.
 - The user's summary must be in English to get a passing grade.

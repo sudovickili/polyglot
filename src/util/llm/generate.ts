@@ -2,6 +2,7 @@ import { generateText, generateObject, streamObject } from "ai"
 import { createOpenAI } from "@ai-sdk/openai"
 import z from "zod"
 import { Err, Ok, Result } from "../Result"
+import { Streamed, StreamedState } from "../StreamedState"
 
 const openai = createOpenAI({
   apiKey: import.meta.env.VITE_OPENAI_API_KEY,
@@ -38,8 +39,8 @@ export async function generateObj<T>(prompt: string, schema: z.ZodSchema<T>): Pr
   }
 }
 
-export async function streamObj<T>(prompt: string, schema: z.ZodSchema<T>, onData: (data: Result<T>) => void) {
-  const { partialObjectStream } = streamObject({
+export async function streamObj<T, T_Partial>(prompt: string, schema: z.ZodSchema<T>, partialSchema: z.ZodSchema<T_Partial>, onData: (data: StreamedState<T, T_Partial>) => void) {
+  const { partialObjectStream, object } = streamObject({
     model: openai("gpt-5-nano"),
     prompt,
     temperature: 0, // Increase for more randomness
@@ -49,10 +50,13 @@ export async function streamObj<T>(prompt: string, schema: z.ZodSchema<T>, onDat
 
   try {
     for await (const partialObj of partialObjectStream) {
-      onData(Ok(partialObj as T))
+      const t_partial = partialSchema.parse(partialObj)
+      onData(Streamed.loading(t_partial))
     }
-    // TODO: Signify completion somehow
+
+    const t = await object as T
+    onData(Streamed.success(t))
   } catch (e) {
-    onData(Err(String(e)))
+    onData(Streamed.error(String(e)))
   }
 }

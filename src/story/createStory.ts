@@ -1,29 +1,13 @@
-import { infoSection, serializeForLlm } from '@/util/llm/promptUtil'
-import { StoryResponse, StoryResponseSchema } from './Story'
-import { generateObj } from '@/util/llm/generate'
+import { infoSection } from '@/util/llm/promptUtil'
 import { knownWords, Progress } from '@/progress/Progress'
 import { llmBiasByProgress, printBiasForLlm } from '@/progress/LlmBias'
-import { Result } from '@/util/Result'
-import { Log } from '@/util/Log'
 import { computeLevel, Level } from '@/progress/Level'
 
 const TARGET_LANGUAGE = "Chinese (Simplified)"
 
-interface Props {
-  progress: Progress
-}
-
-export async function createStory(props: Props): Promise<Result<StoryResponse>> {
-  const prompt = createStoryPrompt(props)
-  Log.temp(`Create Story Prompt: ${prompt}`)
-  const response = await generateObj<StoryResponse>(prompt, StoryResponseSchema)
-  Log.temp(`Create Story Response: ${JSON.stringify(response, null, 2)}`)
-  return response
-}
-
-function createStoryPrompt(props: Props): string {
-  const llmBias = llmBiasByProgress(props.progress)
-  const level = computeLevel(knownWords(props.progress).length)
+export function createStoryPrompt(progress: Progress): string {
+  const llmBias = llmBiasByProgress(progress)
+  const level = computeLevel(knownWords(progress).length)
 
   return `
 You are an expert language learning tutor. Your task is to create a story in a foreign language that is tailor-made for the user's proficiency in that language.

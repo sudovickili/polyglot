@@ -6,7 +6,6 @@ import {
   DEBUG_gradeSummarySuccess,
   gradeSummaryThunk,
 } from "./gradeSummaryThunk"
-import { CodeXml } from "lucide-react"
 import { DebugButton } from "@/components/debugButton"
 
 export function SummaryView() {

@@ -1,9 +1,10 @@
 import { NOT_WORDS } from "@/dictionary/notWords"
 import { ParsedWord } from "./Story"
 import { SimpleWordView, WordView } from "./WordView"
-import { parseStory } from "./parseStory"
 import { cn } from "@/lib/utils"
 import { useAppState } from "@/state/hooks"
+import { StreamedState } from "@/util/StreamedState"
+import { ParsedStory } from "./ParsedStory"
 
 interface Props {
   className?: string
@@ -15,25 +16,42 @@ export function StoryView({ className }: Props) {
 
   if (!story) return null
 
-  if (story.status === "loading" || story.status === "idle") {
-    return <div className={cn(className, "italic")}>Loading story...</div>
-  }
-
-  if (story.status === "error") {
-    return <div className={cn(className)}>Error Loading Story: {story.err}</div>
-  }
-
-  const { parsedTitle, parsedContent } = story.val
-
   return (
     <div
       className={cn(className, "select-none flex flex-col gap-0 text-white/80")}
     >
+      <StreamedStoryView story={story} />
+    </div>
+  )
+}
+
+function StreamedStoryView({ story }: { story: StreamedState<ParsedStory> }) {
+  switch (story.status) {
+    case "idle":
+      return <div className="italic">Loading story...</div>
+    case "loading":
+      if (story.partial) {
+        return <ParsedStoryView story={story.partial} />
+      } else {
+        return <div className="italic">Loading story...</div>
+      }
+    case "success":
+      return <ParsedStoryView story={story.val} />
+    case "error":
+      return <div>Error Loading Story: {story.err}</div>
+  }
+}
+
+function ParsedStoryView({ story }: { story: ParsedStory }) {
+  const { parsedTitle, parsedContent } = story
+
+  return (
+    <>
       <StoryLine line={parsedTitle} className={"mb-4 text-3xl"} />
       {parsedContent.map((line, index) => (
         <StoryLine key={index} line={line} />
       ))}
-    </div>
+    </>
   )
 }
 

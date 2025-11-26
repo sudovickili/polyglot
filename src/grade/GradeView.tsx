@@ -10,9 +10,10 @@ import {
 } from "./Grade"
 import { Button } from "@/components/ui/button"
 import { CircleArrowRight, RotateCcw, Star } from "lucide-react"
-import { retryStory } from "@/state/appSlice"
+import { retryStory, setGrade } from "@/state/appSlice"
 import { createStoryThunk } from "@/story/createStoryThunk"
 import { Log } from "@/util/Log"
+import { StreamedState } from "@/util/StreamedState"
 
 export function GradeView() {
   const grade = useAppState((s) => s.currentStory.grade)
@@ -27,14 +28,33 @@ export function GradeView() {
       )}
     >
       <div className="m-10 p-12 max-w-[700px] bg-neutral-800 rounded-xl shadow-2xl">
-        {(grade.status === "loading" || grade.status === "idle") && (
-          <GradeLoadingView />
-        )}
-        {grade.status === "error" && <p>Error grading summary: {grade.err}</p>}
-        {grade.status === "success" && <GradeSuccessView grade={grade.val} />}
+        <StreamedGradeView grade={grade} />
       </div>
     </div>
   )
+}
+
+function StreamedGradeView({ grade }: { grade: StreamedState<Grade> }) {
+  switch (grade.status) {
+    case "idle":
+      return <GradeLoadingView />
+    case "loading": {
+      if (grade.partial) {
+        return <GradeSuccessView grade={grade.partial} />
+      } else {
+        return <GradeLoadingView />
+      }
+    }
+    case "success":
+      return <GradeSuccessView grade={grade.val} />
+    case "error":
+      return (
+        <div className="flex flex-col gap-4">
+          <p>Error grading summary: {grade.err}</p>
+          <RetryButton />
+        </div>
+      )
+  }
 }
 
 function GradeLoadingView() {

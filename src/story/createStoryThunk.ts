@@ -1,32 +1,73 @@
-import { Ok } from "@/util/Result";
-import { generateStoryId } from "./Story";
-import { createStory } from "./createStory";
+import { generateStoryId, StoryId, StoryResponse, StoryResponseSchema } from "./Story";
+import { createStoryPrompt } from "./createStory";
 import { nextStory, setStory } from "@/state/appSlice";
-import { Async } from "@/util/AsyncState";
 import { nextStoryId, curatedStories } from "./curatedStories";
 import { parseStory } from "./parseStory";
 import { AppThunk } from "@/state/store";
+import { ParsedStory } from "./ParsedStory";
+import { streamObj } from "@/util/llm/generate";
+import { Streamed, StreamedState } from "@/util/StreamedState";
 
 export const createStoryThunk = (): AppThunk => async (dispatch, getState) => {
+  const curated = await getNextCuratedStory(getState().app.currentStory.storyId);
+
+  if (curated) {
+    dispatch(nextStory({ id: curated.story.id }));
+    dispatch(setStory({ id: curated.story.id, story: Streamed.success(curated) }));
+    return;
+  }
+
+  const id: StoryId = generateStoryId();
+  dispatch(nextStory({ id }))
+  dispatch(setStory({ id, story: Streamed.loading() }))
+
+  const prompt = createStoryPrompt(getState().app.progress);
+  streamObj(prompt, StoryResponseSchema, StoryResponseSchema.partial(), async (streamed) => {
+    const streamedParsed = await streamedStoryToParsed(streamed);
+    dispatch(setStory({ id, story: streamedParsed }));
+  })
+}
+
+async function streamedStoryToParsed(streamed: StreamedState<StoryResponse, Partial<StoryResponse>>): Promise<StreamedState<ParsedStory>> {
+  switch (streamed.status) {
+    case 'idle':
+      return Streamed.idle();
+    case 'loading': {
+      const storyResponse: StoryResponse = {
+        title: '',
+        content: '',
+        ...streamed.partial
+      };
+      const parsed = await parseStory({
+        ...storyResponse,
+        id: generateStoryId()
+      });
+      return Streamed.loading(parsed);
+    }
+    case 'success': {
+      const parsed = await parseStory({
+        ...streamed.val,
+        id: generateStoryId()
+      });
+      return Streamed.success(parsed);
+    }
+    case 'error':
+      return Streamed.error(streamed.err);
+  }
+}
+
+async function getNextCuratedStory(currentStoryId: StoryId): Promise<ParsedStory | undefined> {
   const nextCuratedStoryId = nextStoryId(
-    getState().app.currentStory.storyId
+    currentStoryId
   );
 
-  const id = nextCuratedStoryId ?? generateStoryId();
+  if (!nextCuratedStoryId) return
 
-  dispatch(nextStory({ id }))
+  const curated = curatedStories.find((s) => s.id === nextCuratedStoryId);
 
-  const progress = getState().app.progress;
+  if (!curated) return
 
-  const curated = curatedStories.find((s) => s.id === nextCuratedStoryId)
-  const result = curated ? Ok(curated) : (await createStory({ progress }));
-
-  if (result.ok) {
-    const story = await parseStory({
-      ...result.val, id
-    })
-    dispatch(setStory({ id, story: Async.success(story) }));
-  } else {
-    dispatch(setStory({ id, story: Async.error(result.err) }));
-  }
+  return await parseStory({
+    ...curated, id: nextCuratedStoryId
+  });
 }

@@ -2,9 +2,7 @@ export function infoSection(title: string, info: string): string {
   return `
 ${title}:
 ---
-
 ${info}
-
 ---
 `
 }

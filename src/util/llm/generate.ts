@@ -43,15 +43,15 @@ export async function generateObj<T>(prompt: string, schema: z.ZodSchema<T>): Pr
 }
 
 export async function streamObj<T, T_Partial>(prompt: string, schema: z.ZodSchema<T>, partialSchema: z.ZodSchema<T_Partial>, onData: (data: StreamedState<T, T_Partial>) => void) {
-  const { partialObjectStream, object } = streamObject({
-    model: openai("gpt-5-nano"),
-    prompt,
-    temperature: 0, // Increase for more randomness
-    maxTokens: 5000,
-    schema,
-  })
-
   try {
+    const { partialObjectStream, object } = streamObject({
+      model: openai("gpt-5-nano"),
+      prompt,
+      temperature: 0, // Increase for more randomness
+      maxTokens: 5000,
+      schema,
+    })
+
     for await (const partialObj of partialObjectStream) {
       const t_partial = partialSchema.safeParse(partialObj)
       if (t_partial.success) {

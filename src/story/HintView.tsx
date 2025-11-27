@@ -25,7 +25,7 @@ export function HintView({ word }: { word: ParsedWord }) {
   return (
     <div
       className={cn(
-        "rounded shadow-lg bg-blue-400 text-black p-2 max-w-90 relative"
+        "rounded shadow-lg bg-blue-400 text-white p-2 max-w-90 relative"
       )}
     >
       {entry.status === "success" && entry.val && (
@@ -34,14 +34,16 @@ export function HintView({ word }: { word: ParsedWord }) {
       {hintLevel > 1 && (
         <>
           {entry.status === "success" && entry.val && (
-            <p className="text-sm">{entry.val.definitions.join(", ")} </p>
+            <p className="text-sm font-extralight">
+              {entry.val.definitions.join(", ")}{" "}
+            </p>
           )}
         </>
       )}
-      {hintLevel > 2 && (
+      {hintLevel > 2 && chars.length > 1 && (
         <>
-          <div className="bg-black/20 w-full h-px my-2" />
-          <div className="text-sm">
+          <div className="bg-white/20 w-full h-px my-2" />
+          <div className="text-sm flex flex-col gap-1">
             {chars.map((char) => (
               <CharView key={char} char={char} />
             ))}
@@ -55,11 +57,13 @@ export function HintView({ word }: { word: ParsedWord }) {
 function CharView({ char }: { char: string }) {
   const entry = useAsync(() => dict.define(char as Word), [char])
   return (
-    <p className="opacity-50">
-      <span>{char}</span>
+    <div className="flex gap-2 items-start">
+      <span className="text-lg">{char}</span>
       {entry.status === "success" && (
-        <span>{entry.val?.definitions.join(", ")} </span>
+        <span className="opacity-90 font-thin">
+          {entry.val?.definitions.join(", ")}{" "}
+        </span>
       )}
-    </p>
+    </div>
   )
 }

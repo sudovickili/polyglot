@@ -5,15 +5,15 @@ import z from "zod";
 /** How many times a user must have seens a word without asking for a hint for it to be considered known */
 export const KNOWN_THRESHOLD = 5;
 
-export const WordStatsSchema = z.object({
+export const WordProgressSchema = z.object({
   word: WordSchema,
   nSeen: z.number(),
   nHints: z.number(),
   nSeenSinceLastHint: z.number().optional(),
   hintedThisStory: z.boolean().optional(),
 })
-export type WordStats = z.infer<typeof WordStatsSchema>;
-export function getOrCreateWordStats(wordsSeen: Record<Word, WordStats>, word: Word): WordStats {
+export type WordProgress = z.infer<typeof WordProgressSchema>;
+export function getOrCreateWordStats(wordsSeen: Record<Word, WordProgress>, word: Word): WordProgress {
   if (!wordsSeen[word]) {
     wordsSeen[word] = {
       word,
@@ -25,14 +25,14 @@ export function getOrCreateWordStats(wordsSeen: Record<Word, WordStats>, word: W
 }
 
 /** When a hint is given during the story */
-export function updateHint(word: WordStats) {
+export function updateHint(word: WordProgress) {
   word.nHints += 1
   word.nSeenSinceLastHint = 0
   word.hintedThisStory = true
 }
 
 /** After the story */
-function updateSeen(word: WordStats, count: number) {
+function updateSeen(word: WordProgress, count: number) {
   word.nSeen += count;
   if (!word.hintedThisStory && word.nSeenSinceLastHint !== undefined) {
     word.nSeenSinceLastHint += count
@@ -52,20 +52,20 @@ export function updateProgressForCompletedStory(progress: Progress, words: Word[
   })
 }
 
-export function isKnown(word: WordStats): boolean {
+export function isKnown(word: WordProgress): boolean {
   if (word.nSeenSinceLastHint === undefined) {
     return word.nSeen >= KNOWN_THRESHOLD
   }
   return word.nSeenSinceLastHint >= KNOWN_THRESHOLD
 }
 
-export function isLearning(word: WordStats): boolean {
+export function isLearning(word: WordProgress): boolean {
   if (word.nSeenSinceLastHint === undefined) return false;
   return word.nSeenSinceLastHint < KNOWN_THRESHOLD
 }
 
 export const ProgressSchema = z.object({
-  wordsSeen: z.record(WordSchema, WordStatsSchema)
+  wordsSeen: z.record(WordSchema, WordProgressSchema)
 })
 export type Progress = z.infer<typeof ProgressSchema>;
 

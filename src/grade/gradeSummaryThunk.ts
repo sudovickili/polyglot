@@ -5,6 +5,7 @@ import { streamObj } from "@/util/llm/generate"
 import { Grade, GradeSchema, isGradeLetter } from "./Grade"
 import { Streamed, StreamedState } from "@/util/StreamedState"
 import z from "zod"
+import { Log } from "@/util/Log"
 
 const PartialGradeSchema = GradeSchema.extend({
   letter: z.string()
@@ -20,6 +21,7 @@ export const gradeSummaryThunk = (): AppThunk => async (dispatch, getState) => {
   dispatch(setGrade(Streamed.loading()))
 
   const prompt = gradeSummaryPrompt({ story: story.val.story, summary: currentStory.summary })
+  Log.info("createStory prompt", prompt)
 
   streamObj(prompt, GradeSchema, PartialGradeSchema, (result) => {
     dispatch(setGrade(mapStreamedGrade(result)))

@@ -1,8 +1,12 @@
 import { cn } from "@/lib/utils"
-import { knownWords, learningWords, Progress } from "./Progress"
+import { knownWords, learningWords, WordProgress } from "./Progress"
 import { computeLevel } from "./Level"
-import { SummaryView } from "@/grade/SummaryView"
-import { useAppState } from "@/state/hooks"
+import { useAppDispatch, useAppState } from "@/state/hooks"
+import { ProgressBar } from "@/components/ProgressBar"
+import { Button } from "@/components/ui/button"
+import { useState } from "react"
+import { WordProgressView } from "./WordProgressView"
+import { navigate } from "@/state/appSlice"
 
 interface Props {
   className?: string
@@ -12,10 +16,19 @@ export function ProgressView({ className }: Props) {
   const progress = useAppState((s) => s.progress)
   const nKnownWords = knownWords(progress).length
   const level = computeLevel(nKnownWords)
+  const dispatch = useAppDispatch()
 
   return (
     <div className={cn("flex flex-col", className)}>
-      <p className="text-3xl">{level.level}</p>
+      <div className="flex justify-between items-center">
+        <p className="text-3xl">{level.level}</p>
+        <Button
+          label="Deep Dive"
+          variant="link"
+          size="sm"
+          onClick={() => dispatch(navigate("Progress"))}
+        />
+      </div>
       <div className="h-5" />
       <ProgressBar percent={level.progressToNext * 100} height="1rem" />
       <p className="opacity-50">{nKnownWords} known words</p>
@@ -43,15 +56,38 @@ export function ProgressView({ className }: Props) {
   )
 }
 
-function ProgressBar({ percent, height }: { percent: number; height: string }) {
+export function WordProgressGroup({
+  label,
+  words,
+  selected,
+  setSelected,
+}: {
+  label: string
+  words: WordProgress[]
+  selected: WordProgress | null
+  setSelected: (word: WordProgress | null) => void
+}) {
   return (
-    <div className="bg-white/10 relative" style={{ height: height }}>
-      <div
-        className="bg-blue-500 absolute top-0 left-0 bottom-0"
-        style={{
-          width: `${percent}%`,
-        }}
-      />
+    <div>
+      <div className="text-3xl mb-4">{label}</div>
+      <div className="flex flex-wrap gap-x-2 gap-y-1">
+        {words.map((w) => {
+          return (
+            <WordProgressView
+              key={w.word}
+              wordProgress={w}
+              selected={selected?.word === w.word}
+              onMouseEnter={() => {
+                setSelected(w)
+              }}
+              onMouseLeave={() => {
+                setSelected(null)
+              }}
+              className="p-1 -m-1"
+            />
+          )
+        })}
+      </div>
     </div>
   )
 }

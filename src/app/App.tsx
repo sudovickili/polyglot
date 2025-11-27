@@ -7,10 +7,17 @@ import { wrapClick } from "@/util/wrapClick"
 import { useKeyboardHandling } from "@/state/useKeyboardHandling"
 import { GradeView } from "@/grade/GradeView"
 import { SummaryView } from "@/grade/SummaryView"
+import { ProgressDeepDive } from "@/progress/ProgressDeepDive"
 
 function App() {
   const dispatch = useAppDispatch()
   useKeyboardHandling()
+
+  const nav = useAppState((s) => s.nav)
+
+  if (nav === "Progress") {
+    return <ProgressDeepDive />
+  }
 
   return (
     <div

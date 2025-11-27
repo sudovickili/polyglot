@@ -11,12 +11,17 @@ import { StoryEvalSchema } from '@/story/StoryEval'
 import { LanguageSettingsSchema } from '@/app/LanguageSettings'
 import { Streamed, StreamedState, StreamedStateSchema } from '@/util/StreamedState'
 
+const NavSchema = z.literal(['Home', 'Progress', 'History'])
+export type Nav = z.infer<typeof NavSchema>
+
 export const AppStateSchema = z.object({
   progress: ProgressSchema,
   hint: HintSchema.optional(),
   currentStory: StoryEvalSchema,
   storiesById: z.record(StoryIdSchema, StreamedStateSchema(ParsedStorySchema, ParsedStorySchema)),
-  language: LanguageSettingsSchema
+  language: LanguageSettingsSchema,
+  nav: NavSchema,
+  pastStories: z.array(StoryEvalSchema),
 })
 
 export type AppState = z.infer<typeof AppStateSchema>
@@ -37,13 +42,18 @@ export const initialState: AppState = {
   language: {
     learning: 'zh-simplified',
     native: 'en'
-  }
+  },
+  nav: 'Home',
+  pastStories: []
 }
 
 export const appSlice = createSlice({
   name: 'note',
   initialState,
   reducers: {
+    navigate: (state, action: PayloadAction<Nav>) => {
+      state.nav = action.payload
+    },
     nextStory: (state, action: PayloadAction<{ id: StoryId }>) => {
       const lastStory = state.storiesById[state.currentStory.storyId]
       if (lastStory.status === 'success') {
@@ -54,6 +64,7 @@ export const appSlice = createSlice({
       delete state.hint
       const { id } = action.payload
       state.storiesById[id] = Streamed.idle()
+      state.pastStories.push(state.currentStory)
       state.currentStory = {
         storyId: id,
         summary: ''
@@ -81,12 +92,13 @@ export const appSlice = createSlice({
     },
     setSummary: (state, action: PayloadAction<string>) => {
       state.currentStory.summary = action.payload
-    }
+    },
   },
 })
 
 // Action creators are generated for each case reducer function
 export const {
+  navigate,
   nextStory,
   setStory,
   hint,

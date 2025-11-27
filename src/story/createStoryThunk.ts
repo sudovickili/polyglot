@@ -7,6 +7,7 @@ import { AppThunk } from "@/state/store";
 import { ParsedStory } from "./ParsedStory";
 import { streamObj } from "@/util/llm/generate";
 import { Streamed, StreamedState } from "@/util/StreamedState";
+import { Log } from "@/util/Log";
 
 export const createStoryThunk = (): AppThunk => async (dispatch, getState) => {
   const curated = await getNextCuratedStory(getState().app.currentStory.storyId);
@@ -22,6 +23,7 @@ export const createStoryThunk = (): AppThunk => async (dispatch, getState) => {
   dispatch(setStory({ id, story: Streamed.loading() }))
 
   const prompt = createStoryPrompt(getState().app.progress);
+  Log.info("createStory prompt", prompt)
   streamObj(prompt, StoryResponseSchema, StoryResponseSchema.partial(), async (streamed) => {
     const streamedParsed = await streamedStoryToParsed(streamed);
     dispatch(setStory({ id, story: streamedParsed }));

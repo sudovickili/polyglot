@@ -14,15 +14,19 @@ export function SimpleWordView({ word }: { word: string }) {
 }
 
 export function WordView({ word }: { word: ParsedWord }) {
-  const currentHint = useAppState((state) => state.hint)
-  const isActive = currentHint?.word.parsedId === word.parsedId
-  const hintLevel = isActive ? currentHint.level : 0
+  const hintLevel = useAppState((state) => {
+    if (state.hint && state.hint.word.parsedId === word.parsedId) {
+      return state.hint.level
+    } else {
+      return 0
+    }
+  })
   const dispatch = useAppDispatch()
   const anchorRef = useRef<HTMLSpanElement | null>(null)
 
   return (
     <Popover.Root
-      open={isActive}
+      open={hintLevel > 0}
       // onOpenChange
     >
       <Popover.Anchor asChild>
@@ -33,7 +37,7 @@ export function WordView({ word }: { word: ParsedWord }) {
             dispatch(
               hint({
                 word,
-                level: isActive ? hintLevel + 1 : 1,
+                level: hintLevel > 0 ? hintLevel + 1 : 1,
               })
             )
           })}

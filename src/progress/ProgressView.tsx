@@ -2,13 +2,14 @@ import { cn } from "@/lib/utils"
 import { knownWords, learningWords, Progress } from "./Progress"
 import { computeLevel } from "./Level"
 import { SummaryView } from "@/grade/SummaryView"
+import { useAppState } from "@/state/hooks"
 
 interface Props {
   className?: string
-  progress: Progress
 }
 
-export function ProgressView({ className, progress }: Props) {
+export function ProgressView({ className }: Props) {
+  const progress = useAppState((s) => s.progress)
   const nKnownWords = knownWords(progress).length
   const level = computeLevel(nKnownWords)
 

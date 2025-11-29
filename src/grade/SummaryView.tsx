@@ -6,35 +6,50 @@ import {
   DEBUG_gradeSummarySuccess,
   gradeSummaryThunk,
 } from "./gradeSummaryThunk"
-import { DebugButton } from "@/components/debugButton"
+import { AArrowUp, ArrowUp } from "lucide-react"
+import { cn } from "@/lib/utils"
 
-export function SummaryView() {
+export function SummaryView({ className }: { className?: string }) {
   const dispatch = useAppDispatch()
   const { summary } = useAppState((s) => s.currentStory)
 
   return (
-    <div>
+    <div
+      className={cn(
+        "rounded-[20px] overflow-hidden",
+        "flex items-end gap-2 p-1",
+        className
+      )}
+    >
       <Textarea
         placeholder="Summarize The Story"
         value={summary}
         onChange={(e) => dispatch(setSummary(e.target.value))}
+        className="border-none resize-none"
+        rows={1}
+        onInput={(e) => {
+          const el = e.currentTarget
+          el.style.height = "auto"
+          el.style.height = `${el.scrollHeight}px`
+        }}
       />
-      <div className="h-2" />
-      <div className="flex justify-between gap-2">
-        <Button
-          size="lg"
-          onClick={() => {
-            dispatch(gradeSummaryThunk())
-          }}
-          label="Submit"
-        />
-        <DebugButton
-          label="Submit"
-          onClick={() => {
-            dispatch(DEBUG_gradeSummarySuccess())
-          }}
-        />
-      </div>
+      <Button
+        size="lg"
+        onClick={() => {
+          dispatch(gradeSummaryThunk())
+        }}
+        icon={<ArrowUp />}
+        className="w-9 h-9 rounded-full"
+        disabled={summary.trim().length === 0}
+      />
+      <Button
+        variant="debug"
+        icon={<AArrowUp />}
+        onClick={() => {
+          dispatch(DEBUG_gradeSummarySuccess())
+        }}
+        className="w-9 h-9 rounded-full"
+      />
     </div>
   )
 }

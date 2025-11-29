@@ -14,18 +14,13 @@ import { createStoryThunk } from "@/story/createStoryThunk"
 import { StreamedState } from "@/util/StreamedState"
 import { Button } from "@/components/ui/button"
 
-export function GradeView() {
+export function GradeView({ className }: { className?: string }) {
   const grade = useAppState((s) => s.currentStory.grade)
 
   if (!grade) return null
 
   return (
-    <div
-      className={cn(
-        "absolute inset-0 bg-black/50",
-        "flex flex-col items-center justify-center"
-      )}
-    >
+    <div className={cn("flex flex-col items-center justify-center", className)}>
       <div className="m-10 p-12 max-w-[700px] bg-neutral-800 rounded-xl shadow-2xl">
         <StreamedGradeView grade={grade} />
       </div>

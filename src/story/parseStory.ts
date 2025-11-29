@@ -4,7 +4,7 @@ import { dict } from "@/dictionary/Dictionary";
 import { ParsedStory } from "./ParsedStory";
 
 async function parseLine(line: string): Promise<Word[]> {
-  return dict.segment(line);
+  return dict.segment(line.trim());
 }
 
 async function parseContent(content: string): Promise<Word[][]> {

@@ -32,12 +32,16 @@ function StreamedStoryView({ story }: { story: StreamedState<ParsedStory> }) {
 
   switch (story.status) {
     case "idle":
-      return <div className="italic">Loading story...</div>
+      return null
     case "loading":
       if (story.partial) {
         return <ParsedStoryView story={story.partial} />
       } else {
-        return <div className="italic">Loading story...</div>
+        return (
+          <div className="italic w-full h-full flex items-center justify-center">
+            Crafting the best story for you...
+          </div>
+        )
       }
     case "success":
       return <ParsedStoryView story={story.val} />

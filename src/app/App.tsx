@@ -3,10 +3,11 @@ import cn from "classnames"
 import { clearHint } from "@/state/appSlice"
 import { wrapClick } from "@/util/wrapClick"
 import { useKeyboardHandling } from "@/state/useKeyboardHandling"
-import { ProgressDeepDive } from "@/progress/ProgressDeepDive"
-import { MenuBar } from "./MenuBar"
+import { ProgressView } from "@/progress/ProgressView"
 import { Home } from "./Home"
 import { HistoryView } from "@/progress/HistoryView"
+import { SummaryView } from "@/grade/SummaryView"
+import { MenuBar } from "./MenuBar"
 
 function App() {
   const dispatch = useAppDispatch()
@@ -22,11 +23,11 @@ function App() {
       })}
     >
       {nav === "Home" && <Home />}
-      {nav === "Progress" && <ProgressDeepDive />}
+      {nav === "Progress" && <ProgressView />}
       {nav === "History" && <HistoryView />}
-      <div className="absolute bottom-4 w-full flex justify-center pointer-events-none">
+      {/* <div className="absolute bottom-4 w-full flex justify-center">
         <MenuBar className="bg-neutral-800 overflow-hidden rounded-full pointer-events-auto" />
-      </div>
+      </div> */}
     </div>
   )
 }

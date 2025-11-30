@@ -19,37 +19,39 @@ export function ProgressView() {
   const dispatch = useAppDispatch()
 
   return (
-    <div className="flex flex-col p-4 gap-4">
-      <div>
-        <div className="flex gap-2 items-baseline">
-          <p className="text-3xl">{level.level}</p>
-          <p className="opacity-50">{`${nKnownWords} / ${wordsToExceed(
-            level.level
-          )} known words`}</p>
+    <div className="w-full h-full flex justify-center items-stretch">
+      <div className="flex flex-col p-4 gap-4 overflow-scroll w-3xl">
+        <div>
+          <div className="flex gap-2 items-baseline">
+            <p className="text-3xl">{level.level}</p>
+            <p className="opacity-50">{`${nKnownWords} / ${wordsToExceed(
+              level.level
+            )} known words`}</p>
+          </div>
         </div>
+        <ProgressBar percent={level.progressToNext * 100} height="1rem" />
+        <WordProgressGroup
+          label="Learning"
+          description="Recently hinted"
+          words={learningWords(progress)}
+          selected={selected}
+          setSelected={setSelected}
+        />
+        <WordProgressGroup
+          label="Known"
+          description={`Seen ${KNOWN_THRESHOLD} times with no hints`}
+          words={knownWords(progress)}
+          selected={selected}
+          setSelected={setSelected}
+        />
+        <WordProgressGroup
+          label="Familiar"
+          description="Seen, but not known or learning"
+          words={familiarWords(progress)}
+          selected={selected}
+          setSelected={setSelected}
+        />
       </div>
-      <ProgressBar percent={level.progressToNext * 100} height="1rem" />
-      <WordProgressGroup
-        label="Learning"
-        description="Recently hinted"
-        words={learningWords(progress)}
-        selected={selected}
-        setSelected={setSelected}
-      />
-      <WordProgressGroup
-        label="Known"
-        description={`Seen ${KNOWN_THRESHOLD} times with no hints`}
-        words={knownWords(progress)}
-        selected={selected}
-        setSelected={setSelected}
-      />
-      {/* <WordProgressGroup
-        label="Familiar"
-        description="Seen, but not known or learning"
-        words={familiarWords(progress)}
-        selected={selected}
-        setSelected={setSelected}
-      /> */}
     </div>
   )
 }

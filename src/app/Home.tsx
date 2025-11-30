@@ -18,7 +18,7 @@ export function Home() {
     >
       <div className="flex-2 min-w-0 border-r flex justify-center">
         {/* <TitleView className="p-4" /> */}
-        <div className="w-190 h-full min-h-0 flex flex-col">
+        <div className="w-3xl h-full min-h-0 flex flex-col">
           <StoryView className="w-full p-4 pb-8 min-h-0 overflow-scroll flex-1" />
           <div className="z-10 p-4 pt-0 -mt-6 w-full">
             <SummaryView className="bg-neutral-800/60 border backdrop-blur-sm" />

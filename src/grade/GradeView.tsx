@@ -13,6 +13,7 @@ import { retryStory } from "@/state/appSlice"
 import { createStoryThunk } from "@/story/createStoryThunk"
 import { StreamedState } from "@/util/StreamedState"
 import { Button } from "@/components/ui/button"
+import { StarsView } from "./StarsView"
 
 export function GradeView({ className }: { className?: string }) {
   const grade = useAppState((s) => s.currentStory.grade)
@@ -71,7 +72,7 @@ function GradeSuccessView({ grade }: { grade: Grade }) {
         {/* <p className="text-4xl" style={{ color }}>
           {grade.letter} -
         </p> */}
-        <StarsView stars={stars} />
+        <StarsView stars={stars} size="4rem" />
         <p className="text-4xl" style={{ color }}>
           {isPass ? "Pass" : "Fail"}
         </p>
@@ -129,18 +130,4 @@ function ClearErrorButton() {
       onClick={() => dispatch(retryStory())}
     />
   )
-}
-
-function StarsView({ stars }: { stars: StarCount }) {
-  return (
-    <div className="flex items-center gap-4">
-      {Array.from({ length: 3 }, (_, i) => (
-        <StarView key={i} filled={i < stars} />
-      ))}
-    </div>
-  )
-}
-
-function StarView({ filled }: { filled: boolean }) {
-  return <Star size="5rem" className={cn(filled && "fill-white")} />
 }

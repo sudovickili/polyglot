@@ -1,6 +1,7 @@
 import { Popover } from "radix-ui"
 import { WordProgress } from "./Progress"
 import { cn } from "@/lib/utils"
+import { HintView } from "@/story/HintView"
 
 interface Props {
   wordProgress: WordProgress
@@ -35,7 +36,7 @@ export function WordProgressView({
           collisionPadding={20}
           className="focus:outline-none"
         >
-          <WordProgressPopover wordProgress={wordProgress} />
+          <HintView word={wordProgress.word} />
           <Popover.Arrow className="fill-blue-400" width={15} height={8} />
         </Popover.Content>
       </Popover.Portal>

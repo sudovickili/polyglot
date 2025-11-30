@@ -1,6 +1,11 @@
 import z from "zod";
 
-export const WORD_RARITY_LIST = ['Very Common', 'Common', 'Uncommon', 'Rare', 'Exotic', 'Mythic'] as const;
+// export const WORD_RARITY_LIST = ['Very Common', 'Common', 'Uncommon', 'Rare', 'Exotic', 'Mythic'] as const;
+
+// Essential → Core → Useful → Specialized → Niche → Esoteric
+// Fluency-Critical → High-Value → Everyday → Advanced → Rare → Obscure
+// Foundational → Structural → Supporting → Decorative → Ornamental → Arcane
+export const WORD_RARITY_LIST = ['Foundational', 'Essential', 'Core', 'Useful', 'Specialized', 'Niche', 'Esoteric'] as const;
 export type WordRarity = typeof WORD_RARITY_LIST[number];
 
 interface WordRarityInfo {
@@ -9,30 +14,34 @@ interface WordRarityInfo {
 }
 
 const WORD_RARITY_INFO: Record<WordRarity, WordRarityInfo> = {
-  'Very Common': {
-    className: 'text-[#9CA3AF]',
+  'Foundational': {
+    className: 'text-[#FACC15] drop-shadow-[0_0_8px_rgba(250,204,21,1.0)] animate-pulse',
     rankingThreshold: 100
-  }, // Grey
-  'Common': {
-    className: 'text-[#22C55E]',
+  }, // Yellow with strong glow/pulse
+  'Essential': {
+    className: 'text-[#D4AF37] drop-shadow-[0_0_12px_rgba(212,175,55,1.0)]',
     rankingThreshold: 500
-  }, // Green
-  'Uncommon': {
-    className: 'text-[#3B82F6]',
+  }, // Gold with medium glow
+  'Core': {
+    className: 'text-[#8B5CF6] drop-shadow-[0_0_8px_rgba(139,92,246,1.0)]',
     rankingThreshold: 1000
-  }, // Blue
-  'Rare': {
-    className: 'text-[#8B5CF6] drop-shadow-[0_0_6px_rgba(139,92,246,1)]',
+  }, // Purple with medium glow
+  'Useful': {
+    className: 'text-[#3B82F6]',
     rankingThreshold: 2000
-  }, // Purple with subtle glow
-  'Exotic': {
-    className: 'text-[#0EA5E9] drop-shadow-[0_0_8px_rgba(14,165,233,1)]',
+  }, // Blue
+  'Specialized': {
+    className: 'text-[#5a6]',
     rankingThreshold: 5000
-  }, // Light Blue with stronger glow
-  'Mythic': {
-    className: 'text-[#D4AF37] drop-shadow-[0_0_12px_rgba(212,175,55,1)] animate-pulse',
+  }, // Green
+  'Niche': {
+    className: 'text-[#6B8E72]',
+    rankingThreshold: 10000
+  }, // Gray-green
+  'Esoteric': {
+    className: 'text-[#9CA3AF]',
     rankingThreshold: Infinity
-  }, // Gold with bold glow & pulse
+  }, // Gray
 };
 
 export function getRarity(ranking: number): WordRarity {
@@ -41,7 +50,7 @@ export function getRarity(ranking: number): WordRarity {
       return rarity;
     }
   }
-  return 'Mythic'; // Fallback, should not reach here
+  return 'Esoteric'; // Fallback, should not reach here
 }
 
 export function getClassName(rarity: WordRarity): string {

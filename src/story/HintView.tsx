@@ -1,27 +1,21 @@
-import { useDispatch } from "react-redux"
 import { dict } from "@/dictionary/Dictionary"
 import { useAppState } from "@/state/hooks"
 import { cn } from "@/lib/utils"
 import { Word } from "@/dictionary/Word"
-import { ParsedWord } from "./Story"
 import { getClassName, getRarity } from "@/dictionary/WordRarity"
 
-export function HintView({ word }: { word: ParsedWord }) {
-  const definition = dict.define(word.word)
-  const pinyin = dict.pinyin(word.word)
-  const frequencyRanking = dict.frequncyRanking(word.word)
+interface Props {
+  word: Word
+  depth?: number
+}
 
-  const hintLevel = useAppState((state) =>
-    state.hint?.word?.parsedId === word.parsedId ? state.hint.level : 0
-  )
+export function HintView({ word, depth = 2 }: Props) {
+  const definition = dict.define(word)
+  const pinyin = dict.pinyin(word)
+  const frequencyRanking = dict.frequncyRanking(word)
+  const { nSeen, nHints } = useAppState((s) => s.progress.wordsSeen[word])
 
-  const dispatch = useDispatch()
-
-  // const frequency = Hanzi.getFrequency(word)
-  // if (!frequency) return null
-  // const { ranking, definition } = frequency
-
-  const chars = word.word.split("")
+  const chars = word.split("")
 
   return (
     <div
@@ -39,7 +33,7 @@ export function HintView({ word }: { word: ParsedWord }) {
           )}
         </div>
       )}
-      {hintLevel > 1 && (
+      {depth > 1 && (
         <>
           {definition && (
             <p className="text-sm font-extralight">{definition}</p>
@@ -52,6 +46,7 @@ export function HintView({ word }: { word: ParsedWord }) {
                   <CharView key={char} char={char} />
                 ))}
               </div>
+              <span>{`seen ${nSeen}x, ${nHints} hints`}</span>
             </>
           )}
         </>

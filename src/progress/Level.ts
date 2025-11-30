@@ -11,7 +11,7 @@ export const WordsToExceed: Record<Level, number> = {
   Advanced: 2000,
   Expert: 5000,
 }
-function wordsToExceed(level?: Level): number {
+export function wordsToExceed(level?: Level): number {
   return level ? WordsToExceed[level] : 0;
 }
 

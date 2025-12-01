@@ -1,8 +1,5 @@
 # Todos
-- Improved llm bias
-  - Combine learning/known with frequency
 - Publish via github pages
-- Make sure things load fast
 - Service Worker
 
 ## Release Blockers

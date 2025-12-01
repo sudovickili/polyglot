@@ -14,6 +14,15 @@ import { Streamed, StreamedState, StreamedStateSchema } from '@/util/StreamedSta
 const NavSchema = z.literal(['Home', 'Progress', 'History'])
 export type Nav = z.infer<typeof NavSchema>
 
+export const ApiSecretsSchema = z.object({
+  orgId: z.string(),
+  apiKey: z.string(),
+})
+export const SecretsSchema = z.object({
+  editing: z.boolean(),
+  openai: ApiSecretsSchema,
+})
+
 export const AppStateSchema = z.object({
   progress: ProgressSchema,
   hint: HintSchema.optional(),
@@ -22,6 +31,7 @@ export const AppStateSchema = z.object({
   language: LanguageSettingsSchema,
   nav: NavSchema,
   pastStories: z.array(StoryEvalSchema),
+  secrets: SecretsSchema,
 })
 
 export type AppState = z.infer<typeof AppStateSchema>
@@ -44,7 +54,14 @@ export const initialState: AppState = {
     native: 'en'
   },
   nav: 'Home',
-  pastStories: []
+  pastStories: [],
+  secrets: {
+    editing: true,
+    openai: {
+      orgId: '',
+      apiKey: '',
+    }
+  }
 }
 
 export const appSlice = createSlice({
@@ -93,6 +110,12 @@ export const appSlice = createSlice({
     setSummary: (state, action: PayloadAction<string>) => {
       state.currentStory.summary = action.payload
     },
+    setOpenAiSecrets: (state, action: PayloadAction<z.infer<typeof ApiSecretsSchema>>) => {
+      state.secrets.openai = action.payload
+    },
+    setEditingSecrets: (state, action: PayloadAction<boolean>) => {
+      state.secrets.editing = action.payload
+    }
   },
 })
 
@@ -105,7 +128,9 @@ export const {
   clearHint,
   setGrade,
   retryStory,
-  setSummary
+  setSummary,
+  setOpenAiSecrets,
+  setEditingSecrets
 } = appSlice.actions
 
 export default appSlice.reducer

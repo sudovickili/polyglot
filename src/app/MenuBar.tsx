@@ -1,5 +1,6 @@
+import { Button } from "@/components/ui/button"
 import { cn } from "@/lib/utils"
-import { navigate } from "@/state/appSlice"
+import { navigate, setEditingSecrets } from "@/state/appSlice"
 import { useAppDispatch, useAppState } from "@/state/hooks"
 import {
   BookOpen,
@@ -15,6 +16,12 @@ export function MenuBar({ className }: { className?: string }) {
 
   return (
     <div className={cn("flex", className)}>
+      <Button
+        label="Set Secrets"
+        variant="invisible"
+        className="shrink min-w-0"
+      />
+      <div className="flex-1 " />
       <MenuItem
         icon={<History />}
         onClick={() => dispatch(navigate("History"))}
@@ -34,6 +41,13 @@ export function MenuBar({ className }: { className?: string }) {
         icon={<GraduationCap />}
         onClick={() => dispatch(navigate("Progress"))}
       /> */}
+      <div className="flex-1" />
+      <Button
+        label="Set Secrets"
+        variant="link"
+        className="opacity-50 text-sm"
+        onClick={() => dispatch(setEditingSecrets(true))}
+      />
     </div>
   )
 }

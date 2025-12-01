@@ -10,6 +10,7 @@ import {
 import { computeLevel, wordsToExceed } from "./Level"
 import { useState } from "react"
 import { ProgressBar } from "@/components/ProgressBar"
+import { Button } from "@/components/ui/button"
 
 export function ProgressView() {
   const progress = useAppState((s) => s.progress)

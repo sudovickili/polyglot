@@ -30,7 +30,7 @@ function parseJunda(jsonText: string): Map<string, JundaEntry> {
   );
 }
 
-export async function loadJunda() {
-  const jundaJson = await fetchResult('/junda_frequency_list.json');
+export async function loadJundaFromUrl(url: string) {
+  const jundaJson = await fetchResult(url);
   return rmap(jundaJson, parseJunda);
 }

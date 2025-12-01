@@ -44,13 +44,13 @@ export function ProgressView() {
           selected={selected}
           setSelected={setSelected}
         />
-        <WordProgressGroup
+        {/* <WordProgressGroup
           label="Familiar"
           description="Seen, but not known or learning"
           words={familiarWords(progress)}
           selected={selected}
           setSelected={setSelected}
-        />
+        /> */}
       </div>
     </div>
   )

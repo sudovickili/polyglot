@@ -34,11 +34,12 @@ export class Dictionary {
   }
 
   pinyin(word: Word): string | null {
-    return this.wiktionaryDb.bySimplified.get(word)?.[0].pinyin ?? null;
+    return this.get(word)?.pinyin ?? null;
+    // return this.wiktionaryDb.bySimplified.get(word)?.[0].pinyin ?? null;
   }
 
   frequncyRanking(word: Word): number | null {
-    return this.wiktionaryDb.bySimplified.get(word)?.[0].frequencyRaking ?? null;
+    return this.get(word)?.frequencyRanking ?? null;
   }
 
   segment(text: string): Word[] {

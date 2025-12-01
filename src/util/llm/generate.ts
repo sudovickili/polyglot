@@ -10,14 +10,18 @@ const openai = createOpenAI({
   organization: import.meta.env.VITE_OPENAI_ORGANIZATION_ID
 })
 
-export async function generate(prompt: string): Promise<Result<string>> {
+interface Options {
+  model: Parameters<typeof openai>[0],
+  prompt: string,
+  temperature?: number,
+  maxOutputTokens?: number,
+}
+
+export async function generate(options: Options): Promise<Result<string>> {
   try {
     const { text } = await generateText({
-      model: openai("gpt-5-nano"),
-      prompt,
-      temperature: 0, // Increase for more randomness
-      maxOutputTokens: 16384, // This is the maximum number of tokens for gpt-4o-mini
-      // frequencyPenalty: 0,
+      ...options,
+      model: openai(options.model)
     })
     return Ok(text)
   } catch (e) {
@@ -26,14 +30,12 @@ export async function generate(prompt: string): Promise<Result<string>> {
   }
 }
 
-export async function generateObj<T>(prompt: string, schema: z.ZodSchema<T>): Promise<Result<T>> {
+export async function generateObj<T>(options: Options, schema: z.ZodSchema<T>): Promise<Result<T>> {
   try {
     const result = await generateObject({
-      model: openai("gpt-5-nano"),
-      prompt,
-      temperature: 0, // Increase for more randomness
-      maxTokens: 5000,
-      schema,
+      ...options,
+      model: openai(options.model),
+      schema
     })
     return Ok(result.object)
   } catch (e) {
@@ -42,14 +44,12 @@ export async function generateObj<T>(prompt: string, schema: z.ZodSchema<T>): Pr
   }
 }
 
-export async function streamObj<T, T_Partial>(prompt: string, schema: z.ZodSchema<T>, partialSchema: z.ZodSchema<T_Partial>, onData: (data: StreamedState<T, T_Partial>) => void) {
+export async function streamObj<T, T_Partial>(options: Options, schema: z.ZodSchema<T>, partialSchema: z.ZodSchema<T_Partial>, onData: (data: StreamedState<T, T_Partial>) => void) {
   try {
     const { partialObjectStream, object } = streamObject({
-      model: openai("gpt-5-nano"),
-      prompt,
-      temperature: 0, // Increase for more randomness
-      maxTokens: 5000,
-      schema,
+      ...options,
+      model: openai(options.model),
+      schema
     })
 
     for await (const partialObj of partialObjectStream) {

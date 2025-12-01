@@ -21,14 +21,14 @@ The reasoning behind the given grade, without giving away details that would spo
 
 export type Grade = z.infer<typeof GradeSchema>
 
-export function isPassingGrade(grade: Grade): boolean {
-  return ["A", "B", "C"].includes(grade.letter)
+export function isPassingGrade(grade: GradeLetter): boolean {
+  return ["A", "B", "C"].includes(grade)
 }
 
 export type StarCount = 0 | 1 | 2 | 3
 
-export function gradeToStarCount(grade: Grade): StarCount {
-  switch (grade.letter) {
+export function gradeToStarCount(grade: GradeLetter): StarCount {
+  switch (grade) {
     case "A":
       return 3
     case "B":
@@ -37,5 +37,20 @@ export function gradeToStarCount(grade: Grade): StarCount {
       return 1
     default:
       return 0
+  }
+}
+
+export function gradeToText(grade: GradeLetter): string {
+  switch (grade) {
+    case "A":
+      return "Excellent"
+    case "B":
+      return "Good"
+    case "C":
+      return "Pass"
+    case "D":
+      return "So Close"
+    case "F":
+      return "Did you even try?"
   }
 }

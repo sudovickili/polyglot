@@ -1,21 +1,20 @@
 # Todos
-- Wrap views in max-width div
-- History View
 - Improved llm bias
   - Combine learning/known with frequency
-- Auto-flow between views
 - Publish via github pages
 - Make sure things load fast
 - Service Worker
 
 ## Release Blockers
-- Figure out how to improve agent response times (it might just be my slow airbnb internet)
+- OpenAI API Key
 - Improved popover hint boundaries
 - Improve Render Speed
   - Pagination
   - Other optimizations?
 
 ## Maybe/Future
+- Clickable history items (for re-reading/re-summarizing)
+- Auto-flow between views
 - Multi-Language Support
   - Spanish
   - French

@@ -24,7 +24,10 @@ export const createStoryThunk = (): AppThunk => async (dispatch, getState) => {
 
   const prompt = createStoryPrompt(getState().app.progress);
   Log.info("createStory prompt", prompt)
-  streamObj(prompt, StoryResponseSchema, StoryResponseSchema.partial(), async (streamed) => {
+  streamObj({
+    prompt,
+    model: 'gpt-4.1-nano'
+  }, StoryResponseSchema, StoryResponseSchema.partial(), async (streamed) => {
     const streamedParsed = await streamedStoryToParsed(streamed);
     dispatch(setStory({ id, story: streamedParsed }));
   })

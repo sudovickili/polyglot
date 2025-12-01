@@ -46,9 +46,9 @@ export function HintView({ word, depth = 2 }: Props) {
                   <CharView key={char} char={char} />
                 ))}
               </div>
-              <span>{`seen ${nSeen}x, ${nHints} hints`}</span>
             </>
           )}
+          {/* <span className="text-sm opacity-50">{`seen ${nSeen}x, ${nHints} hints`}</span> */}
         </>
       )}
     </div>

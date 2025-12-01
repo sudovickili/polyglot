@@ -23,7 +23,10 @@ export const gradeSummaryThunk = (): AppThunk => async (dispatch, getState) => {
   const prompt = gradeSummaryPrompt({ story: story.val.story, summary: currentStory.summary })
   Log.info("createStory prompt", prompt)
 
-  streamObj(prompt, GradeSchema, PartialGradeSchema, (result) => {
+  streamObj({
+    prompt,
+    model: 'gpt-4.1-nano'
+  }, GradeSchema, PartialGradeSchema, (result) => {
     dispatch(setGrade(mapStreamedGrade(result)))
   })
 }

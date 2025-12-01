@@ -5,6 +5,7 @@ import {
   Grade,
   GradeLetter,
   gradeToStarCount,
+  gradeToText,
   isPassingGrade,
   StarCount,
 } from "./Grade"
@@ -22,7 +23,7 @@ export function GradeView({ className }: { className?: string }) {
 
   return (
     <div className={cn("flex flex-col items-center justify-center", className)}>
-      <div className="m-10 p-12 max-w-[700px] bg-neutral-800 rounded-xl shadow-2xl">
+      <div className="m-10 p-8 max-w-[700px] bg-neutral-800 rounded-xl shadow-2xl">
         <StreamedGradeView grade={grade} />
       </div>
     </div>
@@ -62,20 +63,17 @@ function GradeLoadingView() {
 }
 
 function GradeSuccessView({ grade }: { grade: Grade }) {
-  const isPass = isPassingGrade(grade)
-  const color = gradeToColor(grade)
-  const stars = gradeToStarCount(grade)
+  const isPass = isPassingGrade(grade.letter)
+  const text = gradeToText(grade.letter)
 
   return (
-    <div className="flex flex-col gap-4">
+    <div className="flex flex-col gap-4 min-w-50">
       <div className="flex flex-col items-center gap-2">
         {/* <p className="text-4xl" style={{ color }}>
           {grade.letter} -
         </p> */}
-        <StarsView stars={stars} size="4rem" />
-        <p className="text-4xl" style={{ color }}>
-          {isPass ? "Pass" : "Fail"}
-        </p>
+        <p className="text-4xl">{text}</p>
+        <StarsView grade={grade.letter} size="3rem" />
       </div>
 
       <p>{grade.reason}</p>
@@ -83,17 +81,6 @@ function GradeSuccessView({ grade }: { grade: Grade }) {
       {isPass ? <ContinueButton /> : <RetryButton />}
     </div>
   )
-}
-
-function gradeToColor(grade: Grade): string {
-  const colorByGrade: Record<GradeLetter, string> = {
-    A: "green",
-    B: "lime",
-    C: "yellow",
-    D: "orange",
-    F: "red",
-  }
-  return colorByGrade[grade.letter]
 }
 
 function RetryButton() {

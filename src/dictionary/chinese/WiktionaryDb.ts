@@ -8,7 +8,7 @@ export interface WiktionaryEntry {
   /** The row number in the source TSV 
    * 1 = most frequent word
   */
-  frequencyRaking: number
+  frequencyRanking: number
 }
 
 export class WiktionaryDb {
@@ -63,7 +63,7 @@ export class WiktionaryDb {
         simplified,
         pinyin,
         definition: meaning,
-        frequencyRaking: rank,
+        frequencyRanking: rank,
       }
 
       const arr = this.bySimplified.get(simplified) ?? []
@@ -73,7 +73,7 @@ export class WiktionaryDb {
 
     // Ensure arrays are ordered by frequency ascending (1 is most frequent)
     for (const [k, arr] of this.bySimplified) {
-      arr.sort((a, b) => a.frequencyRaking - b.frequencyRaking)
+      arr.sort((a, b) => a.frequencyRanking - b.frequencyRanking)
       this.bySimplified.set(k, arr)
     }
   }

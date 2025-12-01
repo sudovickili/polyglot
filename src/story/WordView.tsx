@@ -37,7 +37,6 @@ export function WordView({ word }: { word: ParsedWord }) {
             dispatch(
               hint({
                 word,
-                level: hintLevel > 0 ? hintLevel + 1 : 1,
               })
             )
           })}

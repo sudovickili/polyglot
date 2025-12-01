@@ -24,6 +24,7 @@ export function HintView({ word, depth = 2 }: Props) {
         // "drop-shadow-[0_0_12px_rgba(14,165,233,1)]",
         "drop-shadow-[0_0_12px_rgba(0,0,0,1)]"
       )}
+      onClick={(e) => e.preventDefault()}
     >
       {pinyin && (
         <div className="flex items-baseline gap-2">

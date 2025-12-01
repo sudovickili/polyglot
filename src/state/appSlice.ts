@@ -10,6 +10,7 @@ import { Grade } from '@/grade/Grade'
 import { StoryEvalSchema } from '@/story/StoryEval'
 import { LanguageSettingsSchema } from '@/app/LanguageSettings'
 import { Streamed, StreamedState, StreamedStateSchema } from '@/util/StreamedState'
+import { Log } from '@/util/Log'
 
 const NavSchema = z.literal(['Home', 'Progress', 'History'])
 export type Nav = z.infer<typeof NavSchema>
@@ -91,12 +92,30 @@ export const appSlice = createSlice({
       const { id, story } = action.payload
       state.storiesById[id] = story
     },
-    hint: (state, action: PayloadAction<{ word: ParsedWord, level: number }>) => {
+    hint: (state, action: PayloadAction<{ word: ParsedWord }>) => {
       const hint = action.payload
 
-      state.hint = action.payload
-      const stats = getOrCreateWordStats(state.progress.wordsSeen, hint.word.word)
-      updateHint(stats)
+      if (state.hint) {
+        if (state.hint.word.parsedId === hint.word.parsedId) {
+          if (state.hint.level == 2) {
+            delete state.hint
+          } else {
+            state.hint.level += 1
+          }
+        } else {
+          delete state.hint
+        }
+      } else {
+        state.hint = {
+          word: hint.word,
+          level: 1
+        }
+      }
+
+      if (state.hint) {
+        const stats = getOrCreateWordStats(state.progress.wordsSeen, state.hint.word.word)
+        updateHint(stats)
+      }
     },
     clearHint: (state) => {
       delete state.hint

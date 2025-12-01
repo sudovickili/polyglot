@@ -134,3 +134,22 @@ export const {
 } = appSlice.actions
 
 export default appSlice.reducer
+
+export function cleanupAppState(state: AppState): AppState {
+  if (state.currentStory.grade?.status !== 'success') {
+    delete state.currentStory.grade
+  }
+  for (const storyId in state.storiesById) {
+    const id = storyId as StoryId
+    const story = state.storiesById[id]
+    if (story?.status !== 'success') {
+      state.storiesById[id] = Streamed.idle()
+    }
+  }
+  for (const pastStory of state.pastStories) {
+    if (pastStory.grade?.status !== 'success') {
+      delete pastStory.grade
+    }
+  }
+  return state
+}

@@ -1,5 +1,5 @@
 import { configureStore, ThunkAction, UnknownAction } from '@reduxjs/toolkit'
-import appReducer, { AppStateSchema, initialState } from './appSlice'
+import appReducer, { AppStateSchema, cleanupAppState, initialState } from './appSlice'
 import { SaveManager } from '@/util/SaveManager'
 
 const saveManager = new SaveManager({
@@ -13,6 +13,8 @@ const loadedStateResult = saveManager.load('PersistedAppState2')
 const loadedState = loadedStateResult.ok ? loadedStateResult.val : null
 if (!loadedStateResult.ok) {
   console.warn('Failed to load persisted state:', loadedStateResult.err.message)
+} else {
+  loadedStateResult.val = cleanupAppState(loadedStateResult.val)
 }
 
 export const store = configureStore({

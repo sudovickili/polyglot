@@ -61,6 +61,7 @@ export async function streamObj<T, T_Partial>(options: Options, schema: z.ZodSch
     if (streamError) {
       onData(Streamed.error(String(streamError)))
     } else {
+      /** WARNING: the object promise will never resolve in the event of a stream error */
       const t = await object as T
       onData(Streamed.success(t))
     }

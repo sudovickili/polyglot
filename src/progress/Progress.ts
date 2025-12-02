@@ -3,7 +3,7 @@ import { Word, WordSchema } from "@/dictionary/Word";
 import z from "zod";
 
 /** How many times a user must have seens a word without asking for a hint for it to be considered known */
-export const KNOWN_THRESHOLD = 5;
+export const KNOWN_THRESHOLD = 3;
 
 export const WordProgressSchema = z.object({
   word: WordSchema,

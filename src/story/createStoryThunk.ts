@@ -23,16 +23,16 @@ export const createStoryThunk = (): AppThunk => async (dispatch, getState) => {
   dispatch(nextStory({ id }))
   dispatch(setStory({ id, story: Streamed.loading() }))
 
-  const prompt = createStoryPrompt(getState().app.progress);
+  const prompt = createStoryPrompt(getState().app);
   Log.info("createStory prompt", prompt)
   const openAi = getState().app.secrets.openai
 
   streamObj({
     prompt,
+    temperature: 0.5,
     model: createOpenAI({
-      apiKey: openAi.apiKey,
-      organization: openAi.orgId
-    })('gpt-4.1-nano')
+      apiKey: openAi.apiKey
+    })('gpt-4.1-mini'),
   }, StoryResponseSchema, StoryResponseSchema.partial(), async (streamed) => {
     const streamedParsed = await streamedStoryToParsed(streamed);
     dispatch(setStory({ id, story: streamedParsed }));

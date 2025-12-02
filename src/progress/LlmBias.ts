@@ -49,9 +49,9 @@ export function llmBiasForProgress(progress: Progress): LlmBias {
   const llmBias: LlmBias = {}
 
   seen.forEach(w => {
-    let factor = 1.0 // base factor for seen words
-    if (isKnown(w)) factor *= 1.0
-    if (isLearning(w)) factor *= 3.0
+    let factor = 1.5 // More likely to see words you've seen before
+    if (isKnown(w)) factor = 0.7 // Less likely to see known words
+    if (isLearning(w)) factor = 2.0 // Much more likely to see words you're learning
     llmBias[w.word] = factor
   })
 
@@ -61,7 +61,7 @@ export function llmBiasForProgress(progress: Progress): LlmBias {
 export function printBiasForLlm(bias: LlmBias): string {
   return Object.entries(bias)
     .sort(([, a], [, b]) => b - a)
-    .slice(0, 100)
+    .slice(0, 200)
     .map(([word, factor]) => `${word}: ${factor.toFixed(1)}`)
     .join('\n');
 }

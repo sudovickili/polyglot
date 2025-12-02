@@ -30,6 +30,10 @@ export function StoryView({ className }: Props) {
 function StreamedStoryView({ story }: { story: StreamedState<ParsedStory> }) {
   const dispatch = useAppDispatch()
 
+  if (story.status === "idle") {
+    dispatch(createStoryThunk())
+  }
+
   switch (story.status) {
     case "idle":
       return null

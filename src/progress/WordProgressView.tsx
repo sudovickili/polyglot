@@ -37,18 +37,9 @@ export function WordProgressView({
           className="focus:outline-none"
         >
           <HintView word={wordProgress.word} />
-          <Popover.Arrow className="fill-blue-400" width={15} height={8} />
+          <Popover.Arrow className="fill-gray-300" width={15} height={8} />
         </Popover.Content>
       </Popover.Portal>
     </Popover.Root>
-  )
-}
-
-function WordProgressPopover({ wordProgress }: Pick<Props, "wordProgress">) {
-  return (
-    <div className={cn("bg-blue-400 text-white rounded-sm p-2 text-sm")}>
-      <p className="">{wordProgress.nSeen} seen</p>
-      <p className="">{wordProgress.nHints} hints</p>
-    </div>
   )
 }

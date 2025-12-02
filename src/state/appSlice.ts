@@ -79,12 +79,12 @@ export const appSlice = createSlice({
       if (lastStory.status === 'success') {
         const allWords = lastStory.val.parsedAll.map(pw => pw.word)
         updateProgressForCompletedStory(state.progress, allWords)
+        state.pastStories.push(state.currentStory)
       }
 
       delete state.hint
       const { id } = action.payload
       state.storiesById[id] = Streamed.idle()
-      state.pastStories.push(state.currentStory)
       state.currentStory = {
         storyId: id,
         summary: ''

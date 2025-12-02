@@ -1,5 +1,4 @@
 import { useAppDispatch, useAppState } from "@/state/hooks"
-import { WordProgressGroup } from "./ProgressOverview"
 import {
   familiarWords,
   KNOWN_THRESHOLD,
@@ -10,14 +9,13 @@ import {
 import { computeLevel, wordsToExceed } from "./Level"
 import { useState } from "react"
 import { ProgressBar } from "@/components/ProgressBar"
-import { Button } from "@/components/ui/button"
+import { WordProgressGroup } from "./WordProgressGroup"
 
 export function ProgressView() {
   const progress = useAppState((s) => s.progress)
   const nKnownWords = knownWords(progress).length
   const level = computeLevel(nKnownWords)
   const [selected, setSelected] = useState<WordProgress | null>(null)
-  const dispatch = useAppDispatch()
 
   return (
     <div className="w-full h-full flex justify-center items-stretch">
@@ -45,13 +43,14 @@ export function ProgressView() {
           selected={selected}
           setSelected={setSelected}
         />
-        {/* <WordProgressGroup
+        <WordProgressGroup
           label="Familiar"
           description="Seen, but not known or learning"
           words={familiarWords(progress)}
           selected={selected}
           setSelected={setSelected}
-        /> */}
+          collapsedOnRender={true}
+        />
       </div>
     </div>
   )

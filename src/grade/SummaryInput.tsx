@@ -16,8 +16,8 @@ export function SummaryInput({ className }: { className?: string }) {
   return (
     <div
       className={cn(
-        "rounded-[20px] overflow-hidden",
-        "flex items-end gap-2 p-1",
+        "rounded-[24px] overflow-hidden",
+        "flex items-end gap-1 p-1",
         className
       )}
     >
@@ -39,7 +39,7 @@ export function SummaryInput({ className }: { className?: string }) {
           dispatch(gradeSummaryThunk())
         }}
         icon={<ArrowUp />}
-        className="w-9 h-9 rounded-full"
+        className="w-9 h-9 m-0.5 rounded-full"
         disabled={summary.trim().length === 0}
       />
       <Button
@@ -48,7 +48,7 @@ export function SummaryInput({ className }: { className?: string }) {
         onClick={() => {
           dispatch(DEBUG_gradeSummarySuccess())
         }}
-        className="w-9 h-9 rounded-full"
+        className="w-9 h-9 m-0.5 rounded-full"
       />
     </div>
   )

@@ -1,11 +1,8 @@
 import { cn } from "@/lib/utils"
-import { knownWords, learningWords, WordProgress } from "./Progress"
+import { knownWords, learningWords } from "./Progress"
 import { computeLevel } from "./Level"
 import { useAppDispatch, useAppState } from "@/state/hooks"
 import { ProgressBar } from "@/components/ProgressBar"
-import { WordProgressView } from "./WordProgressView"
-import { dict } from "@/dictionary/Dictionary"
-import { getClassName, getRarity } from "@/dictionary/WordRarity"
 
 interface Props {
   className?: string
@@ -15,7 +12,6 @@ export function ProgressOverview({ className }: Props) {
   const progress = useAppState((s) => s.progress)
   const nKnownWords = knownWords(progress).length
   const level = computeLevel(nKnownWords)
-  const dispatch = useAppDispatch()
 
   return (
     <div className={cn("flex flex-col", className)}>
@@ -38,62 +34,6 @@ export function ProgressOverview({ className }: Props) {
             .map((w) => w.word)
             .join(", ")}
         </p>
-        {/* <p>
-          Known:{" "}
-          {knownWords(progress)
-            .map((w) => w.word)
-            .join(", ")}
-        </p> */}
-      </div>
-    </div>
-  )
-}
-
-export function WordProgressGroup({
-  label,
-  description,
-  words,
-  selected,
-  setSelected,
-}: {
-  label: string
-  description?: string
-  words: WordProgress[]
-  selected: WordProgress | null
-  setSelected: (word: WordProgress | null) => void
-}) {
-  return (
-    <div>
-      <div className="text-xl mb-2 flex items-baseline gap-2">
-        {label}
-        <span className="text-sm opacity-50">({words.length})</span>
-        <span className="text-sm opacity-50">{description}</span>
-      </div>
-      <div className="flex flex-wrap gap-x-2 gap-y-1">
-        {words
-          .sort(
-            (a, b) =>
-              (dict.frequncyRanking(a.word) ?? 0) -
-              (dict.frequncyRanking(b.word) ?? 0)
-          )
-          .map((w) => {
-            const rarity = getRarity(dict.frequncyRanking(w.word) ?? 0)
-
-            return (
-              <WordProgressView
-                key={w.word}
-                wordProgress={w}
-                selected={selected?.word === w.word}
-                onMouseEnter={() => {
-                  setSelected(w)
-                }}
-                onMouseLeave={() => {
-                  setSelected(null)
-                }}
-                className={cn("p-1 -m-1", getClassName(rarity))}
-              />
-            )
-          })}
       </div>
     </div>
   )

@@ -18,18 +18,6 @@ export function Setup() {
       <div className="h-px bg-white/10" />
       <h3 className="mb-0">⚠️ Required Secrets ⚠️</h3>
       <LabeledInput
-        label="Org ID"
-        val={secrets.openai.orgId}
-        onChange={(newVal) =>
-          dispatch(
-            setOpenAiSecrets({
-              ...secrets.openai,
-              orgId: newVal,
-            })
-          )
-        }
-      />
-      <LabeledInput
         label="API Key"
         val={secrets.openai.apiKey}
         onChange={(newVal) =>
@@ -65,7 +53,6 @@ export function LabeledInput({
     <div className="flex flex-col">
       <p className="text-sm opacity-50">{label}</p>
       <input
-        type="password"
         className="bg-neutral-700 p-2 rounded-md"
         value={val}
         onChange={(e) => onChange(e.target.value)}

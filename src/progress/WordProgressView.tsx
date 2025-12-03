@@ -18,6 +18,18 @@ export function WordProgressView({
   onMouseLeave,
   className,
 }: Props) {
+  if (!selected) {
+    return (
+      <span
+        onMouseEnter={onMouseEnter}
+        onMouseLeave={onMouseLeave}
+        className={cn(className)}
+      >
+        {wordProgress.word}
+      </span>
+    )
+  }
+
   return (
     <Popover.Root open={selected}>
       <Popover.Anchor asChild>

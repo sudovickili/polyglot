@@ -43,8 +43,8 @@ export function HintView({ word, depth = 2 }: Props) {
             <>
               <div className="bg-white/20 w-full h-px my-2" />
               <div className="text-sm flex flex-col gap-1">
-                {chars.map((char) => (
-                  <CharView key={char} char={char} />
+                {chars.map((char, i) => (
+                  <CharView key={char + i} char={char} />
                 ))}
               </div>
             </>

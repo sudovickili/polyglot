@@ -10,12 +10,15 @@ import { computeLevel, wordsToExceed } from "./Level"
 import { useState } from "react"
 import { ProgressBar } from "@/components/ProgressBar"
 import { WordProgressGroup } from "./WordProgressGroup"
+import { Button } from "@/components/ui/button"
+import { resetState } from "@/state/store"
 
 export function ProgressView() {
   const progress = useAppState((s) => s.progress)
   const nKnownWords = knownWords(progress).length
   const level = computeLevel(nKnownWords)
   const [selected, setSelected] = useState<WordProgress | null>(null)
+  const dispatch = useAppDispatch()
 
   return (
     <div className="w-full h-full flex justify-center items-stretch">
@@ -26,6 +29,15 @@ export function ProgressView() {
             <p className="opacity-50">{`${nKnownWords} / ${wordsToExceed(
               level.level
             )} known words`}</p>
+            <div className="grow" />
+            <Button
+              variant="debug"
+              label="Reset State"
+              size="sm"
+              onClick={() => {
+                dispatch(resetState())
+              }}
+            />
           </div>
         </div>
         <ProgressBar percent={level.progressToNext * 100} height="1rem" />

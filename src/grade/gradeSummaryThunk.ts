@@ -1,5 +1,5 @@
 import { setGrade } from "@/state/appSlice"
-import { gradeSummaryPrompt } from "./gradeSummary"
+import { gradeSummaryPrompt } from "./gradeSummaryPrompt"
 import { AppThunk } from "@/state/store"
 import { streamObj } from "@/util/llm/generate"
 import { Grade, GradeSchema, isGradeLetter } from "./Grade"
@@ -7,6 +7,11 @@ import { createOpenAI } from "@ai-sdk/openai"
 import { Streamed, StreamedState } from "@/util/StreamedState"
 import z from "zod"
 import { Log } from "@/util/Log"
+
+/** Should be lower than story creation (0.7 - 0.9)
+ * Correctness is more important than creativity here
+ */
+const GRADE_STORY_TEMPERATURE = 0.3;
 
 const PartialGradeSchema = GradeSchema.extend({
   letter: z.string()
@@ -28,6 +33,7 @@ export const gradeSummaryThunk = (): AppThunk => async (dispatch, getState) => {
 
   streamObj({
     prompt,
+    temperature: GRADE_STORY_TEMPERATURE,
     model: createOpenAI({
       apiKey: openAi.apiKey,
       organization: openAi.orgId

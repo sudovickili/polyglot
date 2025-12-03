@@ -1,20 +1,13 @@
-import { infoSection, serializeForLlm } from '@/util/llm/promptUtil'
-import { knownWords, Progress } from '@/progress/Progress'
-import { combinedBias, llmBiasByWordFrequency, llmBiasForProgress, printBiasForLlm } from '@/progress/LlmBias'
+import { infoSection } from '@/util/llm/promptUtil'
+import { knownWords } from '@/progress/Progress'
+import { printBiasForLlm, totalLlmBias } from '@/progress/LlmBias'
 import { computeLevel, Level } from '@/progress/Level'
-import { StoryEval } from './StoryEval'
 import { AppState } from '@/state/appSlice'
 
 const TARGET_LANGUAGE = "Chinese (Simplified)"
 
 export function createStoryPrompt(appState: AppState): string {
-  const llmBias_progress = llmBiasForProgress(appState.progress)
-  const llmBias_frequency = llmBiasByWordFrequency()
-  const llmBias = combinedBias(llmBias_progress, llmBias_frequency)
-
-  const history = appState.pastStories
-  const recentStories = history.slice(-2).map(s => appState.storiesById[s.storyId]).filter(s => s.status === 'success').map(s => s.val.story)
-
+  const llmBias = totalLlmBias(appState)
   const level = computeLevel(knownWords(appState.progress).length)
 
   return `
@@ -30,9 +23,7 @@ Important Requirements:
 
 ${infoSection(`Here's an overview of the user's language level. The story MUST be appropriate for this level`, `${level.level}\n\n${LEVEL_EXPLANATIONS[level.level]}`)}
 
-${infoSection('Here are the last 2 stories the user has read. Use these to avoid repetition and ensure variety', serializeForLlm(recentStories))}
-
-${infoSection('Favored Words With Weight. Prefer to include these words in the story based on the factor', printBiasForLlm(llmBias))}
+${infoSection('Favored Words With Weight. Prefer to include these words in the story based on the factor.', printBiasForLlm(llmBias, 200))}
 `
 }
 

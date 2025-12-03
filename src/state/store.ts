@@ -1,4 +1,4 @@
-import { configureStore, ThunkAction, UnknownAction } from '@reduxjs/toolkit'
+import { combineReducers, configureStore, PayloadAction, ThunkAction, UnknownAction } from '@reduxjs/toolkit'
 import appReducer, { AppStateSchema, cleanupAppState, initialState } from './appSlice'
 import { SaveManager } from '@/util/SaveManager'
 
@@ -17,10 +17,32 @@ if (!loadedStateResult.ok) {
   loadedStateResult.val = cleanupAppState(loadedStateResult.val)
 }
 
+const baseReducer = combineReducers({
+  app: appReducer
+})
+
+const RESET_STATE = 'reset-state'
+export function resetState(): PayloadAction {
+  return {
+    type: RESET_STATE,
+    payload: undefined
+  }
+}
+
+function rootReducer(state: ReturnType<typeof baseReducer> | undefined, action: UnknownAction): ReturnType<typeof baseReducer> {
+  if (state === undefined) {
+    return baseReducer(state, action)
+  }
+  if (action.type === RESET_STATE) {
+    return {
+      app: initialState
+    }
+  }
+  return baseReducer(state, action)
+}
+
 export const store = configureStore({
-  reducer: {
-    app: appReducer
-  },
+  reducer: rootReducer,
   preloadedState: {
     // app: initialState,
     app: loadedState ? { ...initialState, ...loadedState } : initialState

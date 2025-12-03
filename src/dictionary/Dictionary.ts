@@ -1,7 +1,6 @@
 import { Log } from "@/util/Log";
 import { WiktionaryDb, WiktionaryEntry } from "./chinese/WiktionaryDb";
 import { Word } from "./Word";
-import { CedictDb } from "./chinese/cedict";
 import { JundaEntry, loadJundaFromUrl } from "./chinese/junda";
 
 export class Dictionary {
@@ -48,6 +47,14 @@ export class Dictionary {
 
   frequncyRanking(word: Word): number | null {
     return this.get(word)?.frequencyRanking ?? null;
+  }
+
+  alternate(word: Word): string | null {
+    const entry = this.get(word);
+    if (entry && entry.t === 'Wiktionary') {
+      return entry.traditional || null;
+    }
+    return null
   }
 
   segment(text: string): Word[] {

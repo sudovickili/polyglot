@@ -11,6 +11,7 @@ interface JundaEntryIn {
 }
 
 export interface JundaEntry {
+  t: "Junda";
   frequencyRanking: number;
   simplified: Char;
   pinyin: string;
@@ -22,6 +23,7 @@ function parseJunda(jsonText: string): Map<string, JundaEntry> {
   const list = data as JundaEntryIn[];
   return new Map<string, JundaEntry>(
     list.map((entry) => [entry.char, {
+      t: "Junda",
       frequencyRanking: entry.n,
       simplified: entry.char,
       pinyin: prettyPinyin(entry.pin),

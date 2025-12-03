@@ -6,5 +6,6 @@ export const NativeLanguageSchema = z.literal("en")
 
 export const LanguageSettingsSchema = z.object({
   learning: z.string(),
-  native: z.string()
+  native: z.string(),
+  alternate: z.boolean().optional(), // e.g. for traditional vs simplified Chinese
 })

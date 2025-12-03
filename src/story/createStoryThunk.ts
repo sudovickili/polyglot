@@ -1,5 +1,5 @@
 import { generateStoryId, StoryId, StoryResponse, StoryResponseSchema } from "./Story";
-import { createStoryPrompt } from "./createStory";
+import { createStoryPrompt } from "./createStoryPrompt";
 import { nextStory, setStory } from "@/state/appSlice";
 import { nextStoryId, curatedStories } from "./curatedStories";
 import { parseStory } from "./parseStory";
@@ -9,6 +9,9 @@ import { streamObj } from "@/util/llm/generate";
 import { Streamed, StreamedState } from "@/util/StreamedState";
 import { Log } from "@/util/Log";
 import { createOpenAI } from "@ai-sdk/openai";
+
+/** ChatGPT recommended 0.7 - 0.9 */
+const CREATE_STORY_TEMPERATURE = 0.8;
 
 export const createStoryThunk = (): AppThunk => async (dispatch, getState) => {
   const curated = await getNextCuratedStory(getState().app.currentStory.storyId);
@@ -29,7 +32,7 @@ export const createStoryThunk = (): AppThunk => async (dispatch, getState) => {
 
   streamObj({
     prompt,
-    temperature: 0.5,
+    temperature: CREATE_STORY_TEMPERATURE,
     model: createOpenAI({
       apiKey: openAi.apiKey
     })('gpt-4.1-mini'),

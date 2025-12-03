@@ -1,15 +1,8 @@
 # Todos
-- Publish via github pages
+- allow section translation
+- traditional toggle
 - Service Worker
-
-## Release Blockers
-- OpenAI API Key
-- Improved popover hint boundaries
-- Improve Render Speed
-  - Pagination
-  - Other optimizations?
-
-## Maybe/Future
+- Reduce frequency-based bias for advanced users
 - Clickable history items (for re-reading/re-summarizing)
 - Auto-flow between views
 - Multi-Language Support

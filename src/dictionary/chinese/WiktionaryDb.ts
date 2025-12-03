@@ -1,6 +1,7 @@
 import { Err, Ok, Result } from "@/util/result/Result"
 
 export interface WiktionaryEntry {
+  t: "Wiktionary"
   traditional: string
   simplified: string
   pinyin: string
@@ -59,6 +60,7 @@ export class WiktionaryDb {
 
       rank += 1
       const entry: WiktionaryEntry = {
+        t: "Wiktionary",
         traditional,
         simplified,
         pinyin,

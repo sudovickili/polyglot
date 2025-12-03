@@ -136,6 +136,9 @@ export const appSlice = createSlice({
     },
     setModal: (state, action: PayloadAction<Modal | null>) => {
       state.modal = action.payload
+    },
+    setLanguageAlternate: (state, action: PayloadAction<boolean>) => {
+      state.language.alternate = action.payload
     }
   },
 })
@@ -151,7 +154,8 @@ export const {
   retryStory,
   setSummary,
   setOpenAiSecrets,
-  setModal
+  setModal,
+  setLanguageAlternate
 } = appSlice.actions
 
 export default appSlice.reducer

@@ -1,18 +1,10 @@
 # Todos
-- Remove padding around not-words
-- set progress bar min-height
-- Progress revamp
-  - Replace "Familiar" with "Other"
-  - Replace colored words with sub-sections with colored headers that explain each frequency bucket.
-- Llm bias tweak: Split people on different paths early based on how many hints they've asked for, and how many words they know. People with low hint to known ratio are experienced, and should have known words biased down. People with high hint to known ratio are new, and should have known words biased up to make stories easier (in the beginning at least, when total number of known words is low)
-- Llm Bias overhaul? Split bias words into sections:
-  - Learning (10% of the words)
-  - Known (80% of the words)
-  - New (10% of the words)
+- Curated words with debug frequency stats (min, max, avg) and created story frequency stats
+- Add a nStoriesSinceLastHint field (for tracking recent learning / seen ratio).
+- Print lts ratio, bucket weights, % of story by bucket, other debug info, in debug tab
+- Parametrize target story length. Limit the number of recommended words to that length.
 - allow section translation
-- traditional toggle
 - Service Worker
-- Reduce frequency-based bias for advanced users
 - Clickable history items (for re-reading/re-summarizing)
 - Auto-flow between views
 - Multi-Language Support

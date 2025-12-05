@@ -1,8 +1,17 @@
+import { Modal } from "@/components/Modal"
 import { Button } from "@/components/ui/button"
 import { setModal, setOpenAiSecrets } from "@/state/appSlice"
 import { useAppDispatch, useAppState } from "@/state/hooks"
 
-export function Setup() {
+export function SetupModal() {
+  return (
+    <Modal>
+      <Setup />
+    </Modal>
+  )
+}
+
+function Setup() {
   const dispatch = useAppDispatch()
   const secrets = useAppState((s) => s.secrets)
 

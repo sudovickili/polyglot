@@ -14,7 +14,7 @@ import { Streamed, StreamedState, StreamedStateSchema } from '@/util/StreamedSta
 const NavSchema = z.literal(['Home', 'Progress', 'History'])
 export type Nav = z.infer<typeof NavSchema>
 
-const ModalSchema = z.literal(['Setup'])
+const ModalSchema = z.literal(['Setup', 'PostStory'])
 export type Modal = z.infer<typeof ModalSchema>
 
 export const ApiSecretsSchema = z.object({
@@ -43,7 +43,8 @@ const initialStory = await parseStory(STORY_0)
 
 export const initialState: AppState = {
   progress: {
-    wordsSeen: {}
+    wordsSeen: {},
+    newKnownWords: []
   },
   currentStory: {
     storyId: STORY_0.id,
@@ -88,6 +89,9 @@ export const appSlice = createSlice({
       state.currentStory = {
         storyId: id,
         summary: ''
+      }
+      if (state.progress.newKnownWords.length > 0) {
+        state.modal = 'PostStory'
       }
     },
     setStory: (state, action: PayloadAction<{ id: StoryId, story: StreamedState<ParsedStory> }>) => {

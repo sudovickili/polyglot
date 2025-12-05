@@ -41,6 +41,8 @@ function updateSeen(word: WordProgress, count: number) {
 }
 
 export function updateProgressForCompletedStory(progress: Progress, words: Word[]) {
+  const knownWordsBeforeCompletion = new Set(knownWords(progress).map(w => w.word))
+
   const wordCounts = words.filter(word => !isNotWord(word)).reduce<Map<Word, number>>((acc, w) => {
     acc.set(w, (acc.get(w) || 0) + 1)
     return acc
@@ -50,6 +52,10 @@ export function updateProgressForCompletedStory(progress: Progress, words: Word[
     const stats = getOrCreateWordStats(progress.wordsSeen, w)
     updateSeen(stats, count)
   })
+
+  const knownWordsAfterCompletion = knownWords(progress).map(w => w.word)
+  const newKnownWords = knownWordsAfterCompletion.filter(w => !knownWordsBeforeCompletion.has(w))
+  progress.newKnownWords = newKnownWords
 }
 
 export function isKnown(word: WordProgress): boolean {
@@ -65,7 +71,8 @@ export function isLearning(word: WordProgress): boolean {
 }
 
 export const ProgressSchema = z.object({
-  wordsSeen: z.record(WordSchema, WordProgressSchema)
+  wordsSeen: z.record(WordSchema, WordProgressSchema),
+  newKnownWords: z.array(WordSchema).default([]),
 })
 export type Progress = z.infer<typeof ProgressSchema>;
 

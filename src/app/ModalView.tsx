@@ -1,9 +1,10 @@
-import { Modal } from "@/components/Modal"
-import { Setup } from "./Setup"
+import { SetupModal } from "./modals/Setup"
 import { useAppState } from "@/state/hooks"
+import { PostStoryModal } from "./modals/PostStory"
 
 export function ModalsView() {
   const modal = useAppState((s) => s.modal)
 
-  return <Modal>{modal === "Setup" && <Setup />}</Modal>
+  if (modal === "Setup") return <SetupModal />
+  if (modal === "PostStory") return <PostStoryModal />
 }

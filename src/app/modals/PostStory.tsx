@@ -1,6 +1,6 @@
 import { Modal } from "@/components/Modal"
 import { Button } from "@/components/ui/button"
-import { setModal } from "@/state/appSlice"
+import { navigate, setModal } from "@/state/appSlice"
 import { useAppDispatch, useAppState } from "@/state/hooks"
 
 export function PostStoryModal() {
@@ -16,23 +16,37 @@ function PostStory() {
   const dispatch = useAppDispatch()
 
   return (
-    <div className="flex flex-col gap-2 items-center min-w-50">
+    <div className="flex flex-col gap-4 items-center min-w-50">
       {newKnownWords.length > 0 && (
         <>
           <h3 className="text-3xl">Great Job 🔥</h3>
-          <p className="text-lg opacity-50">
+          <p className="text-lg opacity-50 -mb-4">
             {newKnownWords.length} new known words
           </p>
-          <p className="mb-2 -mt-2 opacity-70 text-xl">
-            {newKnownWords.join(" ")}
-          </p>
+          <div className="flex flex-wrap gap-x-2 gap-y-0 opacity-70">
+            {newKnownWords.map((w) => (
+              <p>{w}</p>
+            ))}
+            <p className="mb-2 -mt-2 opacity-70 text-xl"></p>
+          </div>
         </>
       )}
-      <Button
-        className="self-stretch"
-        label="Continue"
-        onClick={() => dispatch(setModal(null))}
-      />
+      <div className="self-stretch flex gap-2">
+        <Button
+          className="flex-1"
+          label="See All"
+          onClick={() => {
+            dispatch(navigate("Progress"))
+            dispatch(setModal(null))
+          }}
+          variant="outline"
+        />
+        <Button
+          className="flex-1"
+          label="Continue"
+          onClick={() => dispatch(setModal(null))}
+        />
+      </div>
     </div>
   )
 }

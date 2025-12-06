@@ -1,10 +1,11 @@
 import { AppState } from "@/state/appSlice";
 import { lerp } from "@/util/math";
-import { buckets, learningToSeenRatio, unseenWords } from "./Progress";
+import { buckets, unseenWords } from "./Progress";
 import { combinedBias, llmBias_frequency, llmBias_recency } from "./LlmBias";
 import { Word } from "@/dictionary/Word";
 import { distributeByWeight } from "@/util/math/distributeByWeight";
 import { Log } from "@/util/Log";
+import { hintToSeenRatio_recent } from "./hintToSeenRatio";
 
 export const PREFERRED_WORDS_LIMIT = 100;
 
@@ -15,14 +16,16 @@ interface BucketWeights {
   unseen: number;
 }
 
-export const minLtsBucketWeights: BucketWeights = {
+/** The preferred mixture of words based on the minimum learning to seen ratio (user hasn't looked up anything) */
+export const minHsRatioBucketWeights: BucketWeights = {
   learning: 1.0,
   known: 0.0,
   familiar: 0.5,
   unseen: 0.3,
 }
 
-export const maxLtsBucketWeights: BucketWeights = {
+/** The preferred mixture of words based on the maximum learning to seen ratio (user has looked up every word they see) */
+export const maxHsRatioBucketWeights: BucketWeights = {
   learning: 0.1,
   known: 1.0,
   familiar: 0.1,
@@ -37,8 +40,8 @@ function lerpWeights<K extends string>(a: Record<K, number>, b: Record<K, number
   return result;
 }
 
-export function targetBucketWeights(ltsRatio: number): BucketWeights {
-  return lerpWeights(minLtsBucketWeights, maxLtsBucketWeights, ltsRatio);
+export function targetBucketWeights(hsRatio: number): BucketWeights {
+  return lerpWeights(minHsRatioBucketWeights, maxHsRatioBucketWeights, hsRatio);
 }
 
 /** Prints a list of words the LLM should prefer to use in stories by bucketing words in categories
@@ -48,14 +51,14 @@ export function targetBucketWeights(ltsRatio: number): BucketWeights {
  * - unseen
  * 
  * Sorting them based on frequency and recency
- * And distributing them according to the user's learning / seen ratio
+ * And distributing them according to the user's hint / seen ratio
  */
 export function preferredWordsByBucket(state: AppState): Word[] {
   const { progress } = state
-  const ltsRatio = learningToSeenRatio(progress)
-  const bucketWeights = targetBucketWeights(ltsRatio)
+  const hintToSeenRatio = hintToSeenRatio_recent(state)
+  const bucketWeights = targetBucketWeights(hintToSeenRatio)
 
-  Log.info("learning / seen ratio:", ltsRatio.toFixed(2))
+  Log.info("hint / seen ratio:", hintToSeenRatio.toFixed(2))
   Log.info("bucket weights:", JSON.stringify(bucketWeights, null, 2))
 
   const llmBias = combinedBias([

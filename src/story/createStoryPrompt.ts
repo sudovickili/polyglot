@@ -22,9 +22,8 @@ Important Requirements:
 
 ${infoSection(`Here's an overview of the user's language level. The story MUST be appropriate for this level`, `${level.level}\n\n${LEVEL_EXPLANATIONS[level.level]}`)}
 
-${infoSection(`The story must prioritize the following vocabulary words.
-This list is ordered from highest priority (1) to lowest priority (N).
-Try to use as many of the highest-priority words as possible, without breaking natural grammar`, printPreferredWordsByBucket(appState))}
+${infoSection(`Preferred Words: The story must prioritize the following vocabulary words.
+Plan the story to use as many preferred words as possible, without breaking natural grammar`, printPreferredWordsByBucket(appState))}
 `
 }
 

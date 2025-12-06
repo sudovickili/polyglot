@@ -2,6 +2,7 @@ import { Word } from "@/dictionary/Word";
 import { Progress, seenWords, isKnown, isLearning } from "./Progress";
 import { dict } from "@/dictionary/Dictionary";
 import { AppState } from "@/state/appSlice";
+import { getMostRecentParsedStories, getMostRecentStoryEvals } from "@/state/util";
 
 /** Bias the LLM's word selection.
  * Positive values increase the likelihood of the word being chosen.
@@ -47,8 +48,7 @@ export function llmBias_frequency(maxBias: number = 1.0, noBiasRanking: number =
 
 /** Decreases the likelihood of recently seen words being chosen */
 export function llmBias_recency(state: AppState): LlmBias {
-  const history = state.pastStories
-  const recentStories = history.slice(-3).map(s => state.storiesById[s.storyId]).filter(s => s.status === 'success').map(s => s.val)
+  const recentStories = getMostRecentParsedStories(state, 3)
   const nStories = recentStories.length
 
   const llmBias: LlmBias = {}

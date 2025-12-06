@@ -96,19 +96,6 @@ export const unseenWords = (progress: Progress): Word[] => {
     .filter(w => progress.wordsSeen[w] === undefined)
 }
 
-/** A key indicator for tuning the learning curve
- * 
- * A high ratio means they're asking for a hint on every word they see.
- * 
- * A low ratio means they don't need any hints
- */
-export const learningToSeenRatio = (progress: Progress): number => {
-  const nSeen = seenWords(progress).length
-  if (nSeen === 0) return 0
-  const nLearning = learningWords(progress).length
-  return nLearning / nSeen
-}
-
 export function buckets(progress: Progress) {
   const known = knownWords(progress)
   const learning = learningWords(progress)

@@ -3,6 +3,7 @@ import { knownWords, learningWords } from "./Progress"
 import { computeLevel } from "./Level"
 import { useAppState } from "@/state/hooks"
 import { ProgressBar } from "@/components/ProgressBar"
+import { useDisplayWord } from "@/dictionary/useDisplayWord"
 
 interface Props {
   className?: string
@@ -10,6 +11,7 @@ interface Props {
 
 export function ProgressOverview({ className }: Props) {
   const progress = useAppState((s) => s.progress)
+  const toDisplay = useDisplayWord()
   const nKnownWords = knownWords(progress).length
   const level = computeLevel(nKnownWords)
 
@@ -31,7 +33,7 @@ export function ProgressOverview({ className }: Props) {
         </p>
         <p className="text-sm opacity-50">
           {learningWords(progress)
-            .map((w) => w.word)
+            .map((w) => toDisplay(w.word))
             .join(", ")}
         </p>
       </div>

@@ -2,6 +2,7 @@ import { Modal } from "@/components/Modal"
 import { Button } from "@/components/ui/button"
 import { navigate, setModal } from "@/state/appSlice"
 import { useAppDispatch, useAppState } from "@/state/hooks"
+import { useDisplayWord } from "@/dictionary/useDisplayWord"
 
 export function PostStoryModal() {
   return (
@@ -13,6 +14,7 @@ export function PostStoryModal() {
 
 function PostStory() {
   const newKnownWords = useAppState((s) => s.progress.newKnownWords)
+  const toDisplay = useDisplayWord()
   const dispatch = useAppDispatch()
 
   return (
@@ -25,7 +27,7 @@ function PostStory() {
           </p>
           <div className="flex flex-wrap gap-x-2 gap-y-0 opacity-70">
             {newKnownWords.map((w) => (
-              <p>{w}</p>
+              <p key={w}>{toDisplay(w)}</p>
             ))}
             <p className="mb-2 -mt-2 opacity-70 text-xl"></p>
           </div>

@@ -4,6 +4,7 @@ import { cn } from "@/lib/utils"
 import { useAppState } from "@/state/hooks"
 import { StoryEval } from "@/story/StoryEval"
 import { Log } from "@/util/Log"
+import { toDisplayText } from "@/dictionary/useDisplayWord"
 
 export function HistoryView() {
   const pastStories = useAppState((s) => s.pastStories)
@@ -39,11 +40,14 @@ function CurrentStoryView() {
     }
   })
 
+  const languageAlternate = useAppState((s) => s.language.alternate)
+  const displayTitle = toDisplayText(title, languageAlternate)
+
   const idx = useAppState((s) => s.pastStories.length)
 
   return (
     <HistoryItemView
-      title={title}
+      title={displayTitle}
       isActive={true}
       date="Current"
       onClick={() => {}}
@@ -60,6 +64,7 @@ function PastStoryView({
   idx: number
 }) {
   const maybeStory = useAppState((s) => s.storiesById[gradedStory.storyId])
+  const languageAlternate = useAppState((s) => s.language.alternate)
 
   if (
     maybeStory.status !== "success" ||
@@ -70,10 +75,11 @@ function PastStoryView({
   }
 
   const story = maybeStory.val
+  const displayTitle = toDisplayText(story.story.title, languageAlternate)
 
   return (
     <HistoryItemView
-      title={story.story.title}
+      title={displayTitle}
       grade={gradedStory.grade.val.letter}
       isActive={false}
       onClick={() => {}}

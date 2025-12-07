@@ -3,6 +3,7 @@ import { WordProgress } from "./Progress"
 import { cn } from "@/lib/utils"
 import { HintView } from "@/story/HintView"
 import { wrapClick } from "@/util/wrapClick"
+import { useDisplayWord } from "@/dictionary/useDisplayWord"
 
 interface Props {
   word: WordProgress
@@ -17,6 +18,9 @@ export function WordProgressView({
   setSelected,
   className,
 }: Props) {
+  const toDisplay = useDisplayWord()
+  const displayWord = toDisplay(word.word)
+
   const onClick = wrapClick(() => {
     if (selected) {
       setSelected(null)
@@ -28,7 +32,7 @@ export function WordProgressView({
   if (!selected) {
     return (
       <span onClick={onClick} className={cn(className)}>
-        {word.word}
+        {displayWord}
       </span>
     )
   }
@@ -37,7 +41,7 @@ export function WordProgressView({
     <Popover.Root open={selected}>
       <Popover.Anchor asChild>
         <span onClick={onClick} className={cn(className)}>
-          {word.word}
+          {displayWord}
         </span>
       </Popover.Anchor>
 

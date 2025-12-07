@@ -8,10 +8,12 @@ import {
   hintToSeenRatio_recent,
   RECENT_STORIES_THRESHOLD,
 } from "@/progress/hintToSeenRatio"
+import { useDisplayWord } from "@/dictionary/useDisplayWord"
 
 export function DebugView() {
   const hsRatio = useAppState((s) => hintToSeenRatio_recent(s))
   const app = useAppState((s) => s)
+  const toDisplay = useDisplayWord()
 
   const preferredWords = preferredWordsByBucket(app)
   const storyWords = useCurrentStory((s) =>
@@ -49,7 +51,7 @@ export function DebugView() {
                 "mr-2"
               )}
             >
-              {w}
+              {toDisplay(w)}
             </p>
           )
         })}

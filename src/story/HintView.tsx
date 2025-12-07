@@ -2,6 +2,7 @@ import { dict } from "@/dictionary/Dictionary"
 import { cn } from "@/lib/utils"
 import { Word } from "@/dictionary/Word"
 import { rarityInfo, getRarity } from "@/dictionary/WordRarity"
+import { useDisplayWord } from "@/dictionary/useDisplayWord"
 
 interface Props {
   word: Word
@@ -9,11 +10,14 @@ interface Props {
 }
 
 export function HintView({ word, depth = 2 }: Props) {
+  const toDisplay = useDisplayWord()
+  const displayWord = toDisplay(word)
+
   const definition = dict.define(word)
   const pinyin = dict.pinyin(word)
   const frequencyRanking = dict.frequncyRanking(word)
 
-  const chars = word.split("")
+  const chars = displayWord.split("")
 
   return (
     <div
@@ -42,7 +46,7 @@ export function HintView({ word, depth = 2 }: Props) {
               <div className="bg-white/20 w-full h-px my-2" />
               <div className="text-sm flex flex-col gap-1">
                 {chars.map((char, i) => (
-                  <CharView key={char + i} char={char} />
+                  <CharView key={char + i} char={char} originalChar={word.split("")[i]} />
                 ))}
               </div>
             </>
@@ -53,8 +57,11 @@ export function HintView({ word, depth = 2 }: Props) {
   )
 }
 
-function CharView({ char }: { char: string }) {
-  const definition = dict.define(char as Word)
+function CharView({ char, originalChar }: { char: string; originalChar: string }) {
+  // char is already in display form (traditional if enabled)
+  // originalChar is the simplified form we use for dictionary lookup
+  const lookupChar = originalChar || char
+  const definition = dict.define(lookupChar as Word)
 
   return (
     <div className="flex gap-2 items-start">

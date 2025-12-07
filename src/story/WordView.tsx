@@ -6,7 +6,7 @@ import { HintView } from "./HintView"
 import { wrapClick } from "@/util/wrapClick"
 import { ParsedWord } from "./Story"
 import { cn } from "@/lib/utils"
-import { dict } from "@/dictionary/Dictionary"
+import { useDisplayWord } from "@/dictionary/useDisplayWord"
 
 export function WordView({ word }: { word: ParsedWord }) {
   const hintLevel = useAppState((state) => {
@@ -18,13 +18,9 @@ export function WordView({ word }: { word: ParsedWord }) {
   })
   const anchorRef = useRef<HTMLSpanElement | null>(null)
   const dispatch = useAppDispatch()
-  const languageAlternate = useAppState((state) => state.language.alternate)
-  let displayWord: string = word.word
-  if (languageAlternate && dict.alternate(word.word)) {
-    const alternate = dict.alternate(word.word)
-    if (alternate) displayWord = alternate
-  }
-  const onClick = wrapClick((e) => {
+  const toDisplay = useDisplayWord()
+  const displayWord = toDisplay(word.word)
+  const onClick = wrapClick(() => {
     dispatch(
       hint({
         word,

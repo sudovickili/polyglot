@@ -53,7 +53,7 @@ export class WiktionaryDb {
       const simplified = (cols[iSimp] ?? "").trim()
       let pinyin = (cols[iPin] ?? "").trim()
       if (pinyin.endsWith("5")) {
-        pinyin = prettyPinyin(pinyin as NumberedPinyin)
+        pinyin = pinyin.slice(0, -1)
       }
       const meaning = (cols[iMean] ?? "").trim()
 

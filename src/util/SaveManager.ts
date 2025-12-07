@@ -11,6 +11,16 @@ interface Config {
 
 type SchemaMap = Record<string, z.ZodTypeAny>
 
+type LoadError = {
+  type: 'KeyNotFound'
+} | {
+  type: 'ValidationFailed'
+  details: string
+} | {
+  type: 'UnknownError'
+  details: string
+}
+
 export class SaveManager<Schemas extends SchemaMap> {
   private debouncedSavers = new Map<
     keyof Schemas,
@@ -43,11 +53,11 @@ export class SaveManager<Schemas extends SchemaMap> {
     saver(value)
   }
 
-  load<K extends keyof Schemas>(key: K): Result<z.infer<Schemas[K]>, Error> {
+  load<K extends keyof Schemas>(key: K): Result<z.infer<Schemas[K]>, LoadError> {
     try {
       const raw = this.loadFn(String(key))
       if (raw === null) {
-        return Err(new Error(`Key "${String(key)}" not found`))
+        return Err({ type: 'KeyNotFound' })
       }
 
       const parsed = JSON.parse(raw)
@@ -55,13 +65,12 @@ export class SaveManager<Schemas extends SchemaMap> {
       const result = schema.safeParse(parsed)
 
       if (!result.success) {
-        return Err(new Error(`Validation failed for key "${String(key)}": ${result.error.message}`))
+        return Err({ type: 'ValidationFailed', details: result.error.message })
       }
 
       return Ok(result.data)
     } catch (e) {
-      console.error('Error loading state:', e)
-      return Err(e instanceof Error ? e : new Error(String(e)))
+      return Err({ type: 'UnknownError', details: String(e) })
     }
   }
 

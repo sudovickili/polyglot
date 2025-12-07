@@ -2,6 +2,7 @@ import { Log } from "@/util/Log";
 import { WiktionaryDb, WiktionaryEntry } from "./chinese/WiktionaryDb";
 import { Word } from "./Word";
 import { JundaEntry, loadJundaFromUrl } from "./chinese/junda";
+import { NumberedPinyin, numberedPinyin, PrettyPinyin } from "./chinese/Pinyin";
 
 export class Dictionary {
   private constructor(private wiktionaryDb: WiktionaryDb, private junda: Map<string, JundaEntry>) { }
@@ -44,9 +45,17 @@ export class Dictionary {
     return this.get(word)?.definition ?? null;
   }
 
-  pinyin(word: Word): string | null {
+  pinyin(word: Word): PrettyPinyin | null {
     return this.get(word)?.pinyin ?? null;
     // return this.wiktionaryDb.bySimplified.get(word)?.[0].pinyin ?? null;
+  }
+
+  numberedPinyin(word: Word): NumberedPinyin | null {
+    const pinyin = this.pinyin(word);
+    if (pinyin) {
+      return numberedPinyin(pinyin);
+    }
+    return null;
   }
 
   frequncyRanking(word: Word): number | null {

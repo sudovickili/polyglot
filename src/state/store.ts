@@ -1,6 +1,7 @@
 import { combineReducers, configureStore, PayloadAction, ThunkAction, UnknownAction } from '@reduxjs/toolkit'
 import appReducer, { AppStateSchema, cleanupAppState, initialState } from './appSlice'
 import { SaveManager } from '@/util/SaveManager'
+import { Log } from '@/util/Log'
 
 const saveManager = new SaveManager({
   debounce_s: 3,
@@ -12,7 +13,11 @@ const saveManager = new SaveManager({
 const loadedStateResult = saveManager.load('PersistedAppState2')
 const loadedState = loadedStateResult.ok ? loadedStateResult.val : null
 if (!loadedStateResult.ok) {
-  throw new Error(`Failed to load persisted state: ${loadedStateResult.err.message}`)
+  if (loadedStateResult.err.type === 'KeyNotFound') {
+    Log.info('No persisted state found, starting fresh.')
+  } else {
+    throw new Error(`Failed to load persisted state: ${loadedStateResult.err.details}`)
+  }
 } else {
   loadedStateResult.val = cleanupAppState(loadedStateResult.val)
 }

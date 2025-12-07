@@ -1,8 +1,8 @@
 import { dict } from "@/dictionary/Dictionary"
-import { useAppState } from "@/state/hooks"
 import { cn } from "@/lib/utils"
 import { Word } from "@/dictionary/Word"
 import { rarityInfo, getRarity } from "@/dictionary/WordRarity"
+import { WordPlayer } from "@/dictionary/WordPlayer"
 
 interface Props {
   word: Word
@@ -57,9 +57,14 @@ export function HintView({ word, depth = 2 }: Props) {
 function CharView({ char }: { char: string }) {
   const definition = dict.define(char as Word)
 
+  const numberedPinyin = dict.numberedPinyin(char as Word)
+
   return (
     <div className="flex gap-2 items-start">
-      <span className="text-lg">{char}</span>
+      <div className="flex gap-2 items-center">
+        <span className="text-lg">{char}</span>
+        {numberedPinyin && <WordPlayer wiktionary={numberedPinyin} />}
+      </div>
       {definition && <span className="opacity-90 font-thin">{definition}</span>}
     </div>
   )

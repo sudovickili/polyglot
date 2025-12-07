@@ -1,7 +1,7 @@
 # Todos
-- Pronunciation from wiktionary: https://en.wiktionary.org/wiki/File:Zh-yi1.ogg
 - allow section translation
-- Dictation practice [Web Speech API](https://developer.mozilla.org/en-US/docs/Web/API/Web_Speech_API)
+- Pronunciation / Dictation practice [Web Speech API](https://developer.mozilla.org/en-US/docs/Web/API/Web_Speech_API)
+- Pronunciation from wiktionary: https://en.wiktionary.org/wiki/File:Zh-yi1.ogg
 - Flash card mode for learning words
 
 # Future

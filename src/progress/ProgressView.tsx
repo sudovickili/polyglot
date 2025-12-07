@@ -15,7 +15,6 @@ import { resetState } from "@/state/store"
 import { wrapClick } from "@/util/wrapClick"
 import { dict } from "@/dictionary/Dictionary"
 import { Word } from "@/dictionary/Word"
-import { DebugInput } from "@/debug/DebugInput"
 
 export function ProgressView() {
   const progress = useAppState((s) => s.progress)
@@ -89,7 +88,6 @@ export function ProgressView() {
           setSelected={setSelected}
           collapsedOnRender={true}
         />
-        <DebugInput className="w-15 self-end mt-10" />
       </div>
     </div>
   )

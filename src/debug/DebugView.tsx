@@ -1,6 +1,6 @@
 import { cn } from "@/lib/utils"
 import { useAppState, useCurrentStory } from "@/state/hooks"
-import { WordBucketStats } from "./WordBucketStats"
+import { WordStatusStats } from "./WordStatusStats"
 import { WordFrequencyStats } from "./WordFrequencyStats"
 import { preferredWordsByBucket } from "@/progress/preferredWordsByBucket"
 import { WordOverview } from "./WordOverview"
@@ -30,11 +30,11 @@ export function DebugView() {
     >
       <h2 className="text-2xl">Debug View</h2>
       <Item
-        text={`Hint to Seen Ratio (last ${RECENT_STORIES_THRESHOLD} stories):`}
+        text={`Hint / Seen Ratio (last ${RECENT_STORIES_THRESHOLD} stories):`}
         value={hsRatio.toFixed(2)}
       />
       <WordOverview className={statsClassName} />
-      <WordBucketStats className={statsClassName} />
+      <WordStatusStats className={statsClassName} />
       <WordFrequencyStats className={statsClassName} />
       <h3 className="-mb-2">
         Preferred <span className="opacity-50">{`(as sent to llm)`}</span>

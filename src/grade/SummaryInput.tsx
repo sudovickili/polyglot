@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button"
 import { Textarea } from "@/components/ui/textarea"
-import { setSummary } from "@/state/appSlice"
+import { setDebugMode, setSummary } from "@/state/appSlice"
 import { useAppDispatch, useAppState } from "@/state/hooks"
 import {
   DEBUG_gradeSummarySuccess,
@@ -9,6 +9,7 @@ import {
 import { AArrowUp, ArrowUp } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { useEffect, useRef } from "react"
+import { DEBUG_SECRET, UNDEBUG_SECRET } from "@/debug/DebugInput"
 
 export function SummaryInput({ className }: { className?: string }) {
   const dispatch = useAppDispatch()
@@ -43,7 +44,13 @@ export function SummaryInput({ className }: { className?: string }) {
       <Button
         size="lg"
         onClick={() => {
-          dispatch(gradeSummaryThunk())
+          if (summary.toLocaleLowerCase() === DEBUG_SECRET) {
+            dispatch(setDebugMode(true))
+          } else if (summary.toLocaleLowerCase() === UNDEBUG_SECRET) {
+            dispatch(setDebugMode(false))
+          } else {
+            dispatch(gradeSummaryThunk())
+          }
         }}
         icon={<ArrowUp />}
         className="w-9 h-9 m-0.5 rounded-full"

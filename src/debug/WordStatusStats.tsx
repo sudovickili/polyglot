@@ -13,7 +13,7 @@ import {
 import { buckets, isKnown, isLearning, Progress } from "@/progress/Progress"
 import { useAppState, useCurrentStory } from "@/state/hooks"
 
-export function WordBucketStats({ className }: { className?: string }) {
+export function WordStatusStats({ className }: { className?: string }) {
   const app = useAppState((s) => s)
   const progressBuckets = buckets(app.progress)
   const story = useCurrentStory((s) => s)
@@ -68,8 +68,8 @@ export function WordBucketStats({ className }: { className?: string }) {
 
   return (
     <div className={cn("flex flex-col gap-2", className)}>
-      <h3 className="">Words By User Bucket</h3>
-      <StackedBarChart title="User Status" entries={progressEntries} />
+      <h3 className="">Words By Status</h3>
+      <StackedBarChart title="All-Time" entries={progressEntries} />
       <StackedBarChart
         title="Target (based on LS Ratio)"
         entries={targetEntries}

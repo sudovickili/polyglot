@@ -3,7 +3,8 @@ import { setDebugMode } from "@/state/appSlice"
 import { useState } from "react"
 import { useDispatch } from "react-redux"
 
-const DEBUG_SECRET = "boop"
+export const DEBUG_SECRET = "boop"
+export const UNDEBUG_SECRET = "unboop"
 
 export function DebugInput({ className }: { className?: string }) {
   const dispatch = useDispatch()

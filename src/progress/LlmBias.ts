@@ -96,10 +96,6 @@ function llmBias_progress(progress: Progress): LlmBias {
 }
 
 export function totalLlmBias(state: AppState): LlmBias {
-  console.log("frequency bias", JSON.stringify(llmBias_frequency()))
-  console.log("recency bias", JSON.stringify(llmBias_recency(state)))
-  console.log("progress bias", JSON.stringify(llmBias_progress(state.progress)))
-
   return combinedBias([
     llmBias_frequency(),
     llmBias_recency(state),

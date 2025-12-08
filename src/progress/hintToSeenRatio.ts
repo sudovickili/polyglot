@@ -1,6 +1,7 @@
 import { learningWords, Progress, seenWords } from "./Progress"
 import { getMostRecentParsedStories } from "@/state/util"
 import { AppState } from "@/state/appSlice"
+import { Log } from "@/util/Log"
 
 export const RECENT_STORIES_THRESHOLD = 3
 
@@ -20,13 +21,15 @@ export const learningToSeenRatio_allTime = (progress: Progress): number => {
  */
 export const hintToSeenRatio_recent = (app: AppState): number => {
   const recentStories = getMostRecentParsedStories(app, RECENT_STORIES_THRESHOLD)
+  Log.temp(`recentStories count: ${recentStories.length}`)
 
-  const recentlySeenWords = new Set(recentStories.flatMap(story => story.parsedAll.map(p => p.word)))
   const recentlyHintedWords = Object.entries(app.progress.wordsSeen)
     .filter(([_, wp]) => {
       if (wp.nSeenSinceLastHint === undefined) return false
       return wp.nSeenSinceLastHint < RECENT_STORIES_THRESHOLD
     }).map(([word, _]) => word)
+
+  const recentlySeenWords = new Set(recentStories.flatMap(story => story.parsedAll.map(p => p.word)))
 
   return recentlyHintedWords.length / recentlySeenWords.size
 }

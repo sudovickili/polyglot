@@ -4,7 +4,6 @@ import { buckets, unseenWords } from "./Progress";
 import { combinedBias, llmBias_frequency, llmBias_recency } from "./LlmBias";
 import { Word } from "@/dictionary/Word";
 import { distributeByWeight } from "@/util/math/distributeByWeight";
-import { Log } from "@/util/Log";
 import { hintToSeenRatio_recent } from "./hintToSeenRatio";
 
 export const PREFERRED_WORDS_LIMIT = 100;
@@ -58,9 +57,6 @@ export function preferredWordsByBucket(state: AppState): Word[] {
   const hintToSeenRatio = hintToSeenRatio_recent(state)
   const bucketWeights = targetBucketWeights(hintToSeenRatio)
 
-  Log.info("hint / seen ratio:", hintToSeenRatio.toFixed(2))
-  Log.info("bucket weights:", JSON.stringify(bucketWeights, null, 2))
-
   const llmBias = combinedBias([
     llmBias_frequency(),
     llmBias_recency(state),
@@ -73,10 +69,6 @@ export function preferredWordsByBucket(state: AppState): Word[] {
   const knownWords = known.map(w => w.word).sort(cmp)
   const familiarWords = familiar.map(w => w.word).sort(cmp)
   const unseenWords_ = unseenWords(progress).sort(cmp)
-
-  Log.info(`Sorted Learning`, learning)
-  Log.info(`Sorted Known`, known)
-  Log.info(`Sorted Familiar`, familiar)
 
   const words = distributeByWeight<Word>([
     { items: learningWords, weight: bucketWeights.learning },

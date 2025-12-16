@@ -15,20 +15,22 @@ interface BucketWeights {
   unseen: number;
 }
 
-/** The preferred mixture of words based on the minimum learning to seen ratio (user hasn't looked up anything) */
+/** The preferred mixture of words based on the minimum hint / seen ratio 
+ * (user hasn't looked up anything, too easy) */
 export const minHsRatioBucketWeights: BucketWeights = {
-  learning: 0.1,
-  known: 0.0,
-  familiar: 0.5,
-  unseen: 0.5,
+  learning: 1.0, // Give them as many learning words as possible (they probs won't have many)
+  known: 0.0, // Don't give them any known words
+  familiar: 0.7, // Prefer familiar words so they can become known
+  unseen: 0.3, // Fill remaining spots with unseen words
 }
 
-/** The preferred mixture of words based on the maximum learning to seen ratio (user has looked up every word they see) */
+/** The preferred mixture of words based on the maximum hint / seen ratio 
+ * (user has looked up every word, too hard) */
 export const maxHsRatioBucketWeights: BucketWeights = {
   learning: 0.1,
   known: 1.0,
-  familiar: 0.2,
-  unseen: 0.03,
+  familiar: 0.1,
+  unseen: 0.01,
 }
 
 function lerpWeights<K extends string>(a: Record<K, number>, b: Record<K, number>, ratio: number): Record<K, number> {
@@ -40,7 +42,8 @@ function lerpWeights<K extends string>(a: Record<K, number>, b: Record<K, number
 }
 
 export function targetBucketWeights(hsRatio: number): BucketWeights {
-  return lerpWeights(minHsRatioBucketWeights, maxHsRatioBucketWeights, hsRatio);
+  const skewed = Math.pow(hsRatio, 0.5)
+  return lerpWeights(minHsRatioBucketWeights, maxHsRatioBucketWeights, skewed);
 }
 
 /** Prints a list of words the LLM should prefer to use in stories by bucketing words in categories

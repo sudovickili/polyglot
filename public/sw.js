@@ -1,4 +1,3 @@
-const CACHE_NAME = 'polyglot-v1';
 const PUBLIC_CACHE_NAME = 'polyglot-public-v1';
 
 // Files from the public folder that should be cached permanently
@@ -28,8 +27,7 @@ self.addEventListener('activate', (event) => {
         cacheNames.map((cacheName) => {
           // Clean up old caches but keep the public cache
           if (cacheName !== PUBLIC_CACHE_NAME && 
-              cacheName !== RUNTIME_CACHE && 
-              cacheName !== CACHE_NAME) {
+              cacheName !== RUNTIME_CACHE) {
             return caches.delete(cacheName);
           }
         })

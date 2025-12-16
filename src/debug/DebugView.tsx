@@ -5,6 +5,7 @@ import { WordFrequencyStats } from "./WordFrequencyStats"
 import { preferredWordsByBucket } from "@/progress/preferredWordsByBucket"
 import { WordOverview } from "./WordOverview"
 import { DebugHintToSeen } from "./DebugHintToSeen"
+import { DebugPreferredBuckets } from "./DebugPreferredBuckets"
 
 export function DebugView() {
   const app = useAppState((s) => s)
@@ -48,6 +49,7 @@ export function DebugView() {
           )
         })}
       </div>
+      <DebugPreferredBuckets className={statsClassName} />
     </div>
   )
 }

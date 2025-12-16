@@ -3,7 +3,7 @@ import { getMostRecentParsedStories } from "@/state/util"
 import { AppState } from "@/state/appSlice"
 import { Log } from "@/util/Log"
 
-export const RECENT_STORIES_THRESHOLD = 1
+export const RECENT_STORIES_THRESHOLD = 3
 
 /** @deprecated use hintToSeenRatio_recent instead */
 export const learningToSeenRatio_allTime = (progress: Progress): number => {

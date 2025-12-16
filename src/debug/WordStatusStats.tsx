@@ -12,6 +12,7 @@ import {
 } from "@/progress/preferredWordsByBucket"
 import { buckets, isKnown, isLearning, Progress } from "@/progress/Progress"
 import { useAppState, useCurrentStory } from "@/state/hooks"
+import { colorByBucket } from "./statusBuckets"
 
 export function WordStatusStats({ className }: { className?: string }) {
   const app = useAppState((s) => s)
@@ -19,13 +20,6 @@ export function WordStatusStats({ className }: { className?: string }) {
   const story = useCurrentStory((s) => s)
   const hsRatio = useAppState((s) => hintToSeenRatio_recent(s))
   const targetWeights = targetBucketWeights(hsRatio)
-
-  const colorByBucket: Record<string, string> = {
-    learning: "#f59e0b",
-    known: "#10b981",
-    familiar: "#3b82f6",
-    unseen: "#6b7280",
-  }
 
   const progressEntries: StackedBarEntry[] = Object.entries(
     progressBuckets
@@ -71,7 +65,7 @@ export function WordStatusStats({ className }: { className?: string }) {
       <h3 className="">Words By Status</h3>
       <StackedBarChart title="All-Time" entries={progressEntries} />
       <StackedBarChart
-        title="Target (based on LS Ratio)"
+        title="Target (based on H/S Ratio)"
         entries={targetEntries}
       />
       <StackedBarChart title={`Preferred`} entries={preferredEntries} />
